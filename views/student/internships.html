@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký thực tập - Hệ thống Quản lý Sinh viên</title>
+    <!-- bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    <!-- datatables CSS -->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.css" rel="stylesheet" 
+        integrity="sha384-hGoHjV7OyUWri8NopwGqlstj4hDVsperCk9BPyX+MZb56/Mj81CK4htI0G24m4Es" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+</head>
+<body class="d-flex flex-column h-100">
+    <div class="wrapper flex-grow-1">
+        <!-- Include student sidebar -->
+        <div id="sidebar"></div>
+
+        <div id="content" class="flex-grow-1">
+            <!-- Include header -->
+            <div id="header"></div>
+
+            <div class="container-fluid px-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Đăng ký nguyện vọng thực tập</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Active internship session info -->
+                                <div id="active-session" class="mb-4">
+                                    <div class="alert alert-info">
+                                        <h5 class="alert-heading">Đang diễn ra: <span id="session-name">Đợt thực tập Xuân 2024</span></h5>
+                                        <p id="session-description">Đợt thực tập cho sinh viên năm 3 và 4 trong học kỳ II năm học 2023-2024.</p>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <p class="mb-0"><strong>Thời gian đăng ký:</strong></p>
+                                                <p><span id="registration-period">01/04/2024 - 30/04/2024</span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <p class="mb-0"><strong>Thời gian thực tập:</strong></p>
+                                                <p><span id="internship-period">15/05/2024 - 15/07/2024</span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <p class="mb-0"><strong>Trạng thái:</strong></p>
+                                                <p><span id="session-status" class="badge bg-success">Đang mở đăng ký</span></p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <p class="mb-0"><strong>Thời gian còn lại:</strong></p>
+                                                <p><span id="remaining-time" class="text-danger">15 ngày</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- No active session message (hidden by default) -->
+                                <div id="no-active-session" class="mb-4 d-none">
+                                    <div class="alert alert-warning">
+                                        <h5 class="alert-heading">Không có đợt đăng ký thực tập nào đang diễn ra</h5>
+                                        <p>Hiện tại chưa có đợt đăng ký thực tập nào đang mở. Vui lòng quay lại sau.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Your current registrations -->
+                                <div class="mb-4">
+                                    <h5 class="border-bottom pb-2">Nguyện vọng thực tập của bạn</h5>
+                                    <div id="your-registrations">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Nguyện vọng</th>
+                                                        <th>Công ty</th>
+                                                        <th>Vị trí</th>
+                                                        <th>Trạng thái</th>
+                                                        <th>Thao tác</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="registration-list">
+                                                    <!-- Filled dynamically -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Available companies -->
+                                <div>
+                                    <h5 class="border-bottom pb-2">Danh sách công ty thực tập</h5>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="company-search" placeholder="Tìm kiếm công ty...">
+                                    </div>
+                                    <div class="row" id="companies-list">
+                                        <!-- Filled dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Include footer -->
+            <div id="footer"></div>
+        </div>
+    </div>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Đăng ký nguyện vọng thực tập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="internship-form" action="../../controllers/student/register_internship.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="company-id" name="company_id">
+                        <input type="hidden" id="session-id" name="session_id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Công ty:</label>
+                            <input type="text" class="form-control" id="company-name" name="company_name" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Vị trí thực tập:</label>
+                            <select class="form-select" id="position" name="position" required>
+                                <!-- Filled dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nguyện vọng:</label>
+                            <select class="form-select" id="preference" name="preference_order" required>
+                                <option value="1">Nguyện vọng 1</option>
+                                <option value="2">Nguyện vọng 2</option>
+                                <option value="3">Nguyện vọng 3</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Lý do chọn công ty này:</label>
+                            <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Lý do bạn muốn thực tập tại công ty này..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Đăng ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel Registration Modal -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Hủy đăng ký thực tập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="cancel-form" action="../../controllers/student/cancel_internship.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="cancel-id" name="internship_id">
+                        <p>Bạn có chắc chắn muốn hủy đăng ký nguyện vọng này?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
+                        <button type="submit" class="btn btn-danger">Có, hủy đăng ký</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include JS -->
+
+    <!-- jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+    <!-- datatables -->
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.js" 
+        integrity="sha384-7zOvA9ql/NaRs8q4iOxQ0LgXDU0uArnHO2L6o2QMHIDuvnbmWsxr5axjvByjDsRF" crossorigin="anonymous"></script>
+
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        // Load includes
+        $(function() {
+            $("#sidebar").load("../includes/student_sidebar.html");
+            $("#header").load("../includes/header.html");
+            $("#footer").load("../includes/footer.html");
+            
+            // Add active class to sidebar item
+            setTimeout(function() {
+                $("#internships-link").addClass("active");
+            }, 100);
+
+            // Load active session
+            loadActiveSession();
+            
+            // Load your registrations
+            loadRegistrations();
+            
+            // Load available companies
+            loadCompanies();
+
+            // Company search
+            $("#company-search").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#companies-list .company-card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+
+        function loadActiveSession() {
+            $.ajax({
+                url: '../../controllers/student/get_active_session.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        // Show session info
+                        $("#session-name").text(data.session.name);
+                        $("#session-description").text(data.session.description);
+                        $("#registration-period").text(formatDate(data.session.registration_start_date) + ' - ' + formatDate(data.session.registration_end_date));
+                        $("#internship-period").text(formatDate(data.session.start_date) + ' - ' + formatDate(data.session.end_date));
+                        
+                        // Set session status
+                        let statusClass = 'bg-success';
+                        let statusText = 'Đang mở đăng ký';
+                        
+                        if (data.session.status === 'Closed') {
+                            statusClass = 'bg-warning';
+                            statusText = 'Đã đóng đăng ký';
+                        } else if (data.session.status === 'Finalized') {
+                            statusClass = 'bg-danger';
+                            statusText = 'Đã chốt danh sách';
+                        }
+                        
+                        $("#session-status").attr('class', 'badge ' + statusClass).text(statusText);
+                        $("#remaining-time").text(data.remaining_days + ' ngày');
+                        
+                        // Set session ID
+                        $("#session-id").val(data.session.id);
+                        
+                        $("#active-session").show();
+                        $("#no-active-session").addClass('d-none');
+                    } else {
+                        $("#active-session").hide();
+                        $("#no-active-session").removeClass('d-none');
+                    }
+                },
+                error: function() {
+                    $("#active-session").hide();
+                    $("#no-active-session").removeClass('d-none');
+                    showAlert('error', 'Đã xảy ra lỗi khi tải thông tin đợt thực tập.');
+                }
+            });
+        }
+
+        function loadRegistrations() {
+            $.ajax({
+                url: '../../controllers/student/get_internship_registrations.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const registrations = data.registrations;
+                        $("#registration-list").empty();
+                        
+                        if (registrations.length === 0) {
+                            $("#registration-list").html('<tr><td colspan="5" class="text-center">Bạn chưa đăng ký nguyện vọng nào</td></tr>');
+                            return;
+                        }
+                        
+                        registrations.forEach(function(reg, index) {
+                            let statusBadge;
+                            let actionBtn = '';
+                            
+                            switch(reg.status) {
+                                case 'Nguyện vọng':
+                                    statusBadge = '<span class="badge bg-primary">Nguyện vọng</span>';
+                                    actionBtn = `<button class="btn btn-sm btn-danger" onclick="cancelRegistration(${reg.id})">Hủy</button>`;
+                                    break;
+                                case 'Chờ xét duyệt':
+                                    statusBadge = '<span class="badge bg-warning">Chờ xét duyệt</span>';
+                                    break;
+                                case 'Đã xếp':
+                                    statusBadge = '<span class="badge bg-success">Đã xếp</span>';
+                                    break;
+                                case 'Đang thực tập':
+                                    statusBadge = '<span class="badge bg-info">Đang thực tập</span>';
+                                    break;
+                                case 'Hoàn thành':
+                                    statusBadge = '<span class="badge bg-success">Hoàn thành</span>';
+                                    break;
+                                case 'Không hoàn thành':
+                                    statusBadge = '<span class="badge bg-danger">Không hoàn thành</span>';
+                                    break;
+                                default:
+                                    statusBadge = '<span class="badge bg-secondary">Không xác định</span>';
+                            }
+                            
+                            $("#registration-list").append(`
+                                <tr>
+                                    <td>Nguyện vọng ${reg.preference_order}</td>
+                                    <td>${reg.company_name}</td>
+                                    <td>${reg.position}</td>
+                                    <td>${statusBadge}</td>
+                                    <td>${actionBtn}</td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        $("#registration-list").html('<tr><td colspan="5" class="text-center">Không thể tải dữ liệu đăng ký</td></tr>');
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    $("#registration-list").html('<tr><td colspan="5" class="text-center">Đã xảy ra lỗi khi tải dữ liệu</td></tr>');
+                    showAlert('error', 'Đã xảy ra lỗi khi tải dữ liệu đăng ký của bạn.');
+                }
+            });
+        }
+
+        function loadCompanies() {
+            $.ajax({
+                url: '../../controllers/student/get_internship_companies.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const companies = data.companies;
+                        $("#companies-list").empty();
+                        
+                        if (companies.length === 0) {
+                            $("#companies-list").html('<div class="col-12"><div class="alert alert-info">Không có công ty nào trong đợt thực tập này</div></div>');
+                            return;
+                        }
+                        
+                        companies.forEach(function(company) {
+                            const positions = company.positions ? company.positions.split(', ') : [];
+                            let positionsHtml = '';
+                            
+                            positions.forEach(function(pos) {
+                                positionsHtml += `<span class="badge bg-light text-dark me-1">${pos}</span>`;
+                            });
+                            
+                            $("#companies-list").append(`
+                                <div class="col-md-6 col-xl-4 mb-4 company-card">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${company.name}</h5>
+                                            <h6 class="card-subtitle mb-2 text-muted">${company.industry}</h6>
+                                            <p class="card-text small">${company.description.substring(0, 150)}${company.description.length > 150 ? '...' : ''}</p>
+                                            <div class="mb-2">
+                                                <strong>Vị trí:</strong><br>
+                                                ${positionsHtml}
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <span class="text-muted small">Số lượng: ${company.available_positions - company.positions_filled}/${company.available_positions}</span>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-sm btn-primary" onclick="showRegistrationModal(${company.id}, '${company.name}', '${company.positions}')">Đăng ký</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `);
+                        });
+                    } else {
+                        $("#companies-list").html('<div class="col-12"><div class="alert alert-danger">Không thể tải danh sách công ty</div></div>');
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    $("#companies-list").html('<div class="col-12"><div class="alert alert-danger">Đã xảy ra lỗi khi tải danh sách công ty</div></div>');
+                    showAlert('error', 'Đã xảy ra lỗi khi tải danh sách công ty.');
+                }
+            });
+        }
+
+        function showRegistrationModal(companyId, companyName, positions) {
+            $("#company-id").val(companyId);
+            $("#company-name").val(companyName);
+            
+            // Fill positions dropdown
+            $("#position").empty();
+            if (positions) {
+                const posArr = positions.split(', ');
+                posArr.forEach(function(pos) {
+                    $("#position").append(`<option value="${pos}">${pos}</option>`);
+                });
+            }
+            
+            // Get existing registrations to determine available preferences
+            $.ajax({
+                url: '../../controllers/student/get_internship_registrations.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const registrations = data.registrations;
+                        const usedPreferences = registrations.map(r => parseInt(r.preference_order));
+                        
+                        $("#preference").empty();
+                        for (let i = 1; i <= 3; i++) {
+                            if (!usedPreferences.includes(i)) {
+                                $("#preference").append(`<option value="${i}">Nguyện vọng ${i}</option>`);
+                            }
+                        }
+                        
+                        if ($("#preference option").length === 0) {
+                            $("#preference").append('<option value="" disabled>Bạn đã đăng ký đủ 3 nguyện vọng</option>');
+                            $("#internship-form button[type=submit]").prop('disabled', true);
+                        } else {
+                            $("#internship-form button[type=submit]").prop('disabled', false);
+                        }
+                        
+                        $("#registrationModal").modal('show');
+                    }
+                }
+            });
+        }
+
+        function cancelRegistration(id) {
+            $("#cancel-id").val(id);
+            $("#cancelModal").modal('show');
+        }
+
+        // Form submission
+        $(document).ready(function() {
+            $("#internship-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#registrationModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadRegistrations();
+                            loadCompanies();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#registrationModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi gửi đăng ký.');
+                    }
+                });
+            });
+            
+            $("#cancel-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#cancelModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadRegistrations();
+                            loadCompanies();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#cancelModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi hủy đăng ký.');
+                    }
+                });
+            });
+        });
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function showAlert(type, message) {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Thành công' : 'Lỗi',
+                text: message,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+    </script>
+</body>
+</html> 

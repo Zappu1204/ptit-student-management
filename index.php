@@ -17,11 +17,11 @@ if (isLoggedIn()) {
     // Redirect based on user role
     if (isAdmin()) {
         // Redirect to admin dashboard
-        header('Location: views/admin/dashboard.php');
+        header('Location: views/admin/dashboard.html');
         exit;
     } else if (isStudent()) {
         // Redirect to student dashboard
-        header('Location: views/student/dashboard.php');
+        header('Location: views/student/dashboard.html');
         exit;
     }
 } else {

@@ -2,22 +2,122 @@
  * Student Management System - Main CSS
  */
 
+/* Import footer styles */
+@import url('footer.css');
+
+/* Global styles */
 :root {
-    --primary-color: #0d6efd;
+    --primary-color: #0a58ca;
     --secondary-color: #6c757d;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-    --info-color: #0dcaf0;
+    --background-color: #f8f9fa;
+    --text-color: #212529;
     --light-color: #f8f9fa;
-    --dark-color: #212529;
+    --dark-color: #343a40;
+    --border-color: #dee2e6;
 }
 
 body {
     font-family: 'Roboto', sans-serif;
-    color: #212529;
-    background-color: #f8f9fa;
+    color: var(--text-color);
+    background-color: var(--background-color);
 }
+
+/* Navbar styling */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.nav-link.active {
+    font-weight: 500;
+    color: var(--primary-color) !important;
+}
+
+/* Sidebar styling */
+.sidebar {
+    background-color: var(--light-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar .nav-link {
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--primary-color);
+}
+
+.sidebar .nav-link.active {
+    font-weight: 500;
+}
+
+/* Card styling */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+/* Form controls */
+.form-control:focus, .form-select:focus {
+    border-color: rgba(220, 53, 69, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #0a58ca;
+    border-color: #0041a1;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.card-body .table-responsive .dt-container .dt-paging .pagination .page-item.active .page-link {
+    background-color: #0152ff; /* Changed to PTIT blue */
+    color: white;             /* Chữ màu trắng để tương phản */
+    border-color: #0152ff;    /* Matched with background color */
+    transition: all 0.3s ease; /* Add transition for smoother effects */
+}
+
+.card-body .table-responsive .dt-container .dt-paging .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
+
+.card-body .table-responsive .dataTables_wrapper .dataTables_paginate .pagination .page-item.active .page-link {
+    background-color: #0152ff; /* Changed to PTIT blue */
+    color: white;             /* Chữ màu trắng để tương phản */
+    border-color: #0152ff;    /* Matched with background color */
+    transition: all 0.3s ease; /* Add transition for smoother effects */
+}
+
+.card-body .table-responsive .dataTables_wrapper .dataTables_paginate .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
+
+/* .card-body .table-responsive .dt-container .dt-paging . */
+
+
+/* Footer styling is now in footer.css */
 
 /* Hero section styles */
 .hero-section {
@@ -267,10 +367,10 @@ body {
     color: #333;
 }
 
-/* PTIT color scheme */
+/* PTIT color scheme - changed from red to blue */
 :root {
-    --ptit-red: #0152ff;
-    --ptit-dark-red: #013aaa;
+    --ptit-blue: #0152ff;
+    --ptit-dark-blue: #013aaa;
     --ptit-white: #ffffff;
     --ptit-gray: #6c757d;
     --ptit-light-gray: #f8f9fa;
@@ -280,15 +380,20 @@ body {
 header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.text-white {
+    color: #ffffff !important;
+}
 
 /* Sidebar */
 .list-group-item.active {
-    background-color: var(--ptit-red) !important;
-    border-color: var(--ptit-red) !important;
+    background-color: var(--ptit-blue) !important;
+    border-color: var(--ptit-blue) !important;
 }
 
 .list-group-item:hover:not(.active) {
-    background-color: #f8f9fa;
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
 /* Card styling */
@@ -299,33 +404,39 @@ header {
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 8px 16px rgba(1, 82, 255, 0.15) !important;
 }
 
 .card-header {
     font-weight: 500;
 }
 
-/* Button styles */
-.btn-danger {
-    background-color: var(--ptit-red);
-    border-color: var(--ptit-red);
+/* Button styles - Changed from red to blue */
+.btn-primary {
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
-.btn-danger:hover {
-    background-color: var(--ptit-dark-red);
-    border-color: var(--ptit-dark-red);
+.btn-primary:hover {
+    background-color: var(--ptit-dark-blue);
+    border-color: var(--ptit-dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(1, 82, 255, 0.2);
 }
 
-.btn-outline-danger {
-    color: var(--ptit-red);
-    border-color: var(--ptit-red);
+.btn-outline-primary {
+    color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
-.btn-outline-danger:hover {
-    background-color: var(--ptit-red);
-    border-color: var(--ptit-red);
+.btn-outline-primary:hover {
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
     color: var(--ptit-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(1, 82, 255, 0.2);
 }
 
 /* Table styling */
@@ -336,12 +447,19 @@ header {
 }
 
 .table-hover tbody tr:hover {
-    background-color: rgba(220, 53, 69, 0.05);
+    background-color: rgba(1, 82, 255, 0.05);
+    transition: background-color 0.3s ease;
 }
 
 /* Badge colors */
-.badge.bg-danger {
-    background-color: var(--ptit-red) !important;
+.badge.bg-primary {
+    background-color: var(--ptit-blue) !important;
+    transition: all 0.3s ease;
+}
+
+.badge.bg-primary:hover {
+    background-color: var(--ptit-dark-blue) !important;
+    transform: scale(1.05);
 }
 
 /* Dashboard stats cards */
@@ -351,6 +469,11 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.rounded-circle:hover {
+    transform: scale(1.1);
 }
 
 /* Login form */
@@ -360,6 +483,11 @@ header {
     padding: 15px;
 }
 
+.form-control:focus {
+    border-color: var(--ptit-blue);
+    box-shadow: 0 0 0 0.25rem rgba(1, 82, 255, 0.25);
+}
+
 /* Footer */
 footer {
     margin-top: 3rem;
@@ -367,16 +495,20 @@ footer {
 
 /* Pagination */
 .pagination .page-item.active .page-link {
-    background-color: var(--ptit-red);
-    border-color: var(--ptit-red);
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
 .pagination .page-link {
-    color: var(--ptit-red);
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
 .pagination .page-link:hover {
-    color: var(--ptit-dark-red);
+    color: var(--ptit-dark-blue);
+    background-color: #e9f0ff;
+    transform: translateY(-2px);
 }
 
 /* Responsive adjustments */
@@ -392,12 +524,14 @@ footer {
 
 /* Homepage styles */
 .list-group-item-action:hover {
-    background-color: rgba(220, 53, 69, 0.05);
+    background-color: rgba(1, 82, 255, 0.05);
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
 }
 
 /* Student profile */
 .student-profile-header {
-    background-color: var(--ptit-red);
+    background-color: var(--ptit-blue);
     color: white;
     padding: 2rem 0;
     margin-bottom: 2rem;
@@ -434,7 +568,7 @@ canvas {
 
 /* Hero section */
 .hero-section {
-    background-color: var(--ptit-red);
+    background-color: var(--ptit-blue);
     color: white;
     padding: 3rem 0;
     margin-bottom: 2rem;
@@ -455,11 +589,16 @@ canvas {
     border: none;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    box-shadow: 0 10px 20px rgba(1, 82, 255, 0.15);
 }
 
 .auth-card .card-header {
     border-radius: 10px 10px 0 0;
-    background-color: var(--ptit-red);
+    background-color: var(--ptit-blue);
     color: white;
     padding: 1.5rem;
 }
@@ -469,6 +608,11 @@ canvas {
     height: 80px;
     margin: 0 auto 1rem;
     display: block;
+    transition: all 0.3s ease;
+}
+
+.auth-logo:hover {
+    transform: scale(1.05);
 }
 
 /* Sidebar */
@@ -477,6 +621,13 @@ canvas {
     border-right: 0;
     border-radius: 0;
     padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.student-sidebar .list-group-item:hover {
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    padding-left: 1.5rem;
 }
 
 .student-sidebar .list-group-item i {
@@ -489,6 +640,13 @@ canvas {
     border-right: 0;
     border-radius: 0;
     padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.admin-sidebar .list-group-item:hover {
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    padding-left: 1.5rem;
 }
 
 .admin-sidebar .list-group-item i {
@@ -503,6 +661,11 @@ canvas {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.top-students-card:hover {
+    box-shadow: 0 8px 16px rgba(1, 82, 255, 0.15);
 }
 
 .top-student {
@@ -512,7 +675,8 @@ canvas {
 }
 
 .top-student:hover {
-    background-color: #f8f9fa;
+    background-color: #e9f0ff;
+    transform: translateX(5px);
 }
 
 .top-student:last-child {
@@ -522,7 +686,7 @@ canvas {
 .top-student .student-rank {
     width: 36px;
     height: 36px;
-    background-color: var(--ptit-red);
+    background-color: var(--ptit-blue);
     color: white;
     display: flex;
     align-items: center;
@@ -530,6 +694,11 @@ canvas {
     border-radius: 50%;
     font-weight: bold;
     margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.top-student:hover .student-rank {
+    transform: scale(1.1);
 }
 
 .top-student-1 .student-rank {
@@ -546,5 +715,10 @@ canvas {
 
 .top-student .student-gpa {
     font-weight: bold;
-    color: var(--ptit-red);
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.top-student:hover .student-gpa {
+    transform: scale(1.05);
 }

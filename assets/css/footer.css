@@ -1,0 +1,29 @@
+/* Sticky Footer Styles */
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container-fluid, .wrapper {
+    flex: 1 0 auto;
+}
+
+#content {
+    flex: 1 0 auto;
+}
+
+#footer {
+    flex-shrink: 0;
+}
+
+/* Extra styling for the footer */
+.footer {
+    margin-top: auto;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e7e7e7;
+} 

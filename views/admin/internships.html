@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý thực tập - Hệ thống Quản lý Sinh viên</title>
+    <!-- bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
+    <!-- datatables CSS -->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.css" rel="stylesheet" 
+        integrity="sha384-hGoHjV7OyUWri8NopwGqlstj4hDVsperCk9BPyX+MZb56/Mj81CK4htI0G24m4Es" crossorigin="anonymous">
+
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- sweetalert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.min.css">
+
+    <!-- style css -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body class="d-flex flex-column h-100">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <div class="container-fluid flex-grow-1">
+        <div class="row h-100">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-0">
+                <div id="sidebar"></div>
+            </div>
+
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 ms-sm-auto px-md-4 py-4">
+
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h2">Quản lý Thực tập</h1>
+                    </div>
+                    
+                    <!-- Tabs for different sections -->
+                    <ul class="nav nav-tabs mb-4" id="internshipTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="sessions-tab" data-bs-toggle="tab" data-bs-target="#sessions" type="button" role="tab" aria-controls="sessions" aria-selected="true">
+                                <i class="fas fa-calendar-alt me-2"></i>Đợt thực tập
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="companies-tab" data-bs-toggle="tab" data-bs-target="#companies" type="button" role="tab" aria-controls="companies" aria-selected="false">
+                                <i class="fas fa-building me-2"></i>Công ty
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="registrations-tab" data-bs-toggle="tab" data-bs-target="#registrations" type="button" role="tab" aria-controls="registrations" aria-selected="false">
+                                <i class="fas fa-clipboard-list me-2"></i>Đăng ký
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab content -->
+                    <div class="tab-content" id="internshipTabsContent">
+                        <!-- Sessions tab -->
+                        <div class="tab-pane fade show active" id="sessions" role="tabpanel" aria-labelledby="sessions-tab">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Danh sách đợt thực tập</h5>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSessionModal">
+                                        <i class="fas fa-plus me-2"></i>Thêm đợt thực tập
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" id="sessionsTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Tên đợt</th>
+                                                    <th>Thời gian đăng ký</th>
+                                                    <th>Thời gian thực tập</th>
+                                                    <th>Học kỳ</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="sessions-list">
+                                                <!-- Filled dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Companies tab -->
+                        <div class="tab-pane fade" id="companies" role="tabpanel" aria-labelledby="companies-tab">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Danh sách công ty thực tập</h5>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCompanyModal">
+                                        <i class="fas fa-plus me-2"></i>Thêm công ty
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover" id="companiesTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Tên công ty</th>
+                                                    <th>Ngành nghề</th>
+                                                    <th>Địa chỉ</th>
+                                                    <th>Số SV tối đa</th>
+                                                    <th>Trạng thái</th>
+                                                    <th>Thao tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="companies-list">
+                                                <!-- Filled dynamically -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Registrations tab -->
+                        <div class="tab-pane fade" id="registrations" role="tabpanel" aria-labelledby="registrations-tab">
+                            <!-- Content will be loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Footer -->
+     <div id="footer"></div>
+
+    <!-- JavaScript libraries -->
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+    <!-- datatables JS -->
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.js" 
+        integrity="sha384-7zOvA9ql/NaRs8q4iOxQ0LgXDU0uArnHO2L6o2QMHIDuvnbmWsxr5axjvByjDsRF" crossorigin="anonymous"></script>
+
+    <!-- sweetalert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.18/dist/sweetalert2.all.min.js"></script>
+
+    <!-- chart JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" 
+        integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        // Load includes
+        $(function() {
+            $("#sidebar").load("../includes/admin_sidebar.html");
+            $("#header").load("../includes/header.html");
+            $("#footer").load("../includes/footer.html");
+            
+            // Add active class to sidebar item
+            setTimeout(function() {
+                $("#sidebar-internships").addClass("active");
+            }, 100);
+            
+            // Load tab content
+            loadSessions();
+            
+            // Load other tabs on click
+            $('#companies-tab').on('click', function() {
+                loadCompanies();
+            });
+            
+            $('#registrations-tab').on('click', function() {
+                loadRegistrations();
+            });
+        });
+        
+        function showAlert(type, message) {
+            Swal.fire({
+                icon: type,
+                title: type === 'success' ? 'Thành công' : 'Lỗi',
+                text: message,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        function loadSessions() {
+            $.ajax({
+                url: '../../controllers/admin/get_internship_sessions.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const sessions = data.sessions;
+                        
+                        if ($.fn.DataTable.isDataTable('#sessionsTable')) {
+                            $('#sessionsTable').DataTable().destroy();
+                        }
+                        
+                        $("#sessions-list").empty();
+                        
+                        sessions.forEach(function(session) {
+                            let statusBadge = '';
+                            let actionButtons = '';
+                            
+                            switch(session.status) {
+                                case 'Draft':
+                                    statusBadge = '<span class="badge bg-secondary">Bản nháp</span>';
+                                    actionButtons = `
+                                        <button class="btn btn-sm btn-primary me-1" onclick="editSession(${session.id})"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-success me-1" onclick="changeStatus(${session.id}, 'Open')"><i class="fas fa-lock-open"></i></button>
+                                        <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${session.id})"><i class="fas fa-trash"></i></button>
+                                    `;
+                                    break;
+                                case 'Open':
+                                    statusBadge = '<span class="badge bg-success">Mở đăng ký</span>';
+                                    actionButtons = `
+                                        <button class="btn btn-sm btn-primary me-1" onclick="editSession(${session.id})"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-warning me-1" onclick="changeStatus(${session.id}, 'Closed')"><i class="fas fa-lock"></i></button>
+                                        <button class="btn btn-sm btn-info" onclick="showFinalizeModal(${session.id})"><i class="fas fa-check-circle"></i></button>
+                                    `;
+                                    break;
+                                case 'Closed':
+                                    statusBadge = '<span class="badge bg-warning">Đóng đăng ký</span>';
+                                    actionButtons = `
+                                        <button class="btn btn-sm btn-primary me-1" onclick="editSession(${session.id})"><i class="fas fa-edit"></i></button>
+                                        <button class="btn btn-sm btn-success me-1" onclick="changeStatus(${session.id}, 'Open')"><i class="fas fa-lock-open"></i></button>
+                                        <button class="btn btn-sm btn-info" onclick="showFinalizeModal(${session.id})"><i class="fas fa-check-circle"></i></button>
+                                    `;
+                                    break;
+                                case 'Finalized':
+                                    statusBadge = '<span class="badge bg-danger">Đã chốt</span>';
+                                    actionButtons = `
+                                        <button class="btn btn-sm btn-primary me-1" onclick="viewSessionDetails(${session.id})"><i class="fas fa-eye"></i></button>
+                                        <button class="btn btn-sm btn-secondary" onclick="generateReport(${session.id})"><i class="fas fa-file-export"></i></button>
+                                    `;
+                                    break;
+                                default:
+                                    statusBadge = '<span class="badge bg-secondary">Không xác định</span>';
+                            }
+                            
+                            $("#sessions-list").append(`
+                                <tr>
+                                    <td>${session.id}</td>
+                                    <td>${session.name}</td>
+                                    <td>${formatDate(session.registration_start_date)} - ${formatDate(session.registration_end_date)}</td>
+                                    <td>${formatDate(session.start_date)} - ${formatDate(session.end_date)}</td>
+                                    <td>${session.semester_name}, ${session.academic_year}</td>
+                                    <td>${statusBadge}</td>
+                                    <td>${actionButtons}</td>
+                                </tr>
+                            `);
+                        });
+                        
+                        // Initialize DataTable
+                        $('#sessionsTable').DataTable({
+                            "order": [[0, "desc"]],
+                            "language": {
+                                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json"
+                            }
+                        });
+                        
+                        // Load semester dropdown for add form
+                        loadSemestersDropdown();
+                    } else {
+                        showAlert('error', data.message || 'Không thể tải danh sách đợt thực tập');
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi tải danh sách đợt thực tập');
+                }
+            });
+        }
+        
+        function loadSemestersDropdown() {
+            $.ajax({
+                url: '../../controllers/admin/get_semesters.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const semesters = data.semesters;
+                        $("select[name='semester_id']").empty();
+                        
+                        semesters.forEach(function(semester) {
+                            $("select[name='semester_id']").append(`
+                                <option value="${semester.id}">${semester.name}, ${semester.academic_year}</option>
+                            `);
+                        });
+                        
+                        $("#edit-session-semester").empty();
+                        semesters.forEach(function(semester) {
+                            $("#edit-session-semester").append(`
+                                <option value="${semester.id}">${semester.name}, ${semester.academic_year}</option>
+                            `);
+                        });
+                    }
+                }
+            });
+        }
+        
+        function editSession(id) {
+            $.ajax({
+                url: '../../controllers/admin/get_internship_session.php',
+                type: 'GET',
+                data: { session_id: id },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const session = data.session;
+                        
+                        $("#edit-session-id").val(session.id);
+                        $("#edit-session-name").val(session.name);
+                        $("#edit-session-description").val(session.description);
+                        $("#edit-session-academic-year").val(session.academic_year);
+                        $("#edit-session-semester").val(session.semester_id);
+                        $("#edit-registration-start-date").val(session.registration_start_date);
+                        $("#edit-registration-end-date").val(session.registration_end_date);
+                        $("#edit-start-date").val(session.start_date);
+                        $("#edit-end-date").val(session.end_date);
+                        $("#edit-session-status").val(session.status);
+                        
+                        $("#editSessionModal").modal('show');
+                    } else {
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi tải thông tin đợt thực tập');
+                }
+            });
+        }
+        
+        function changeStatus(id, status) {
+            $.ajax({
+                url: '../../controllers/admin/update_internship_session_status.php',
+                type: 'POST',
+                data: { session_id: id, status: status },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        showAlert('success', data.message);
+                        loadSessions();
+                    } else {
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi cập nhật trạng thái');
+                }
+            });
+        }
+        
+        function showDeleteModal(id) {
+            $("#delete-session-id").val(id);
+            $("#deleteSessionModal").modal('show');
+        }
+        
+        function showFinalizeModal(id) {
+            $("#finalize-session-id").val(id);
+            $("#finalizeSessionModal").modal('show');
+        }
+        
+        function viewSessionDetails(id) {
+            // Redirect to session details page
+            window.location.href = `internship_session_details.html?id=${id}`;
+        }
+        
+        function generateReport(id) {
+            window.open(`../../controllers/admin/generate_internship_report.php?session_id=${id}`, '_blank');
+        }
+        
+        // Handle form submissions
+        $(document).ready(function() {
+            $("#add-session-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#addSessionModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadSessions();
+                            $("#add-session-form")[0].reset();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#addSessionModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi thêm đợt thực tập');
+                    }
+                });
+            });
+            
+            $("#edit-session-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#editSessionModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadSessions();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#editSessionModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi cập nhật đợt thực tập');
+                    }
+                });
+            });
+            
+            $("#delete-session-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#deleteSessionModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadSessions();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#deleteSessionModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi xóa đợt thực tập');
+                    }
+                });
+            });
+            
+            $("#finalize-session-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#finalizeSessionModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadSessions();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#finalizeSessionModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi chốt danh sách');
+                    }
+                });
+            });
+        });
+
+        function loadCompanies() {
+            $.ajax({
+                url: '../../controllers/admin/get_companies.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const companies = data.companies;
+                        
+                        if ($.fn.DataTable.isDataTable('#companiesTable')) {
+                            $('#companiesTable').DataTable().destroy();
+                        }
+                        
+                        $("#companies-list").empty();
+                        
+                        companies.forEach(function(company) {
+                            let statusBadge = company.status === 'Active' ? 
+                                '<span class="badge bg-success">Hoạt động</span>' : 
+                                '<span class="badge bg-danger">Không hoạt động</span>';
+                            
+                            $("#companies-list").append(`
+                                <tr>
+                                    <td>${company.id}</td>
+                                    <td>${company.name}</td>
+                                    <td>${company.industry}</td>
+                                    <td>${company.address}</td>
+                                    <td>${company.max_interns}</td>
+                                    <td>${statusBadge}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary me-1" onclick="editCompany(${company.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-info me-1" onclick="assignCompanyToSession(${company.id}, '${company.name}')">
+                                            <i class="fas fa-link"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" onclick="deleteCompany(${company.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                        
+                        // Initialize DataTable
+                        $('#companiesTable').DataTable({
+                            "order": [[0, "desc"]],
+                            "language": {
+                                "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Vietnamese.json"
+                            }
+                        });
+                    } else {
+                        showAlert('error', data.message || 'Không thể tải danh sách công ty');
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi tải danh sách công ty');
+                }
+            });
+        }
+        
+        function editCompany(id) {
+            $.ajax({
+                url: '../../controllers/admin/get_company.php',
+                type: 'GET',
+                data: { company_id: id },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const company = data.company;
+                        
+                        $("#edit-company-id").val(company.id);
+                        $("#edit-company-name").val(company.name);
+                        $("#edit-company-industry").val(company.industry);
+                        $("#edit-company-address").val(company.address);
+                        $("#edit-company-description").val(company.description);
+                        $("#edit-company-website").val(company.website);
+                        $("#edit-company-max-interns").val(company.max_interns);
+                        $("#edit-company-contact-person").val(company.contact_person);
+                        $("#edit-company-contact-email").val(company.contact_email);
+                        $("#edit-company-contact-phone").val(company.contact_phone);
+                        $("#edit-company-status").val(company.status);
+                        
+                        $("#editCompanyModal").modal('show');
+                    } else {
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi tải thông tin công ty');
+                }
+            });
+        }
+        
+        function deleteCompany(id) {
+            $("#delete-company-id").val(id);
+            $("#deleteCompanyModal").modal('show');
+        }
+        
+        function assignCompanyToSession(id, name) {
+            $("#assign-company-id").val(id);
+            $("#assign-company-name").val(name);
+            
+            // Load sessions dropdown
+            $.ajax({
+                url: '../../controllers/admin/get_active_sessions.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status === 'success') {
+                        const sessions = data.sessions;
+                        $("#assign-session-id").empty();
+                        
+                        if (sessions.length === 0) {
+                            $("#assign-session-id").append('<option value="" disabled>Không có đợt thực tập nào đang hoạt động</option>');
+                            $("#assign-session-form button[type=submit]").prop('disabled', true);
+                        } else {
+                            sessions.forEach(function(session) {
+                                $("#assign-session-id").append(`
+                                    <option value="${session.id}">${session.name} (${session.start_date} - ${session.end_date})</option>
+                                `);
+                            });
+                            $("#assign-session-form button[type=submit]").prop('disabled', false);
+                        }
+                        
+                        $("#assignSessionModal").modal('show');
+                    } else {
+                        showAlert('error', data.message);
+                    }
+                },
+                error: function() {
+                    showAlert('error', 'Đã xảy ra lỗi khi tải danh sách đợt thực tập');
+                }
+            });
+        }
+        
+        // Handle form submissions
+        $(document).ready(function() {
+            $("#add-company-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#addCompanyModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadCompanies();
+                            $("#add-company-form")[0].reset();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#addCompanyModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi thêm công ty');
+                    }
+                });
+            });
+            
+            $("#edit-company-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#editCompanyModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadCompanies();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#editCompanyModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi cập nhật công ty');
+                    }
+                });
+            });
+            
+            $("#delete-company-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#deleteCompanyModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                            loadCompanies();
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#deleteCompanyModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi xóa công ty');
+                    }
+                });
+            });
+            
+            $("#assign-session-form").on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    dataType: 'json',
+                    success: function(response) {
+                        $("#assignSessionModal").modal('hide');
+                        if (response.status === 'success') {
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('error', response.message);
+                        }
+                    },
+                    error: function() {
+                        $("#assignSessionModal").modal('hide');
+                        showAlert('error', 'Đã xảy ra lỗi khi gán công ty vào đợt thực tập');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Add Session Modal -->
+    <div class="modal fade" id="addSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm đợt thực tập mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="add-session-form" action="../../controllers/admin/add_internship_session.php" method="POST">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tên đợt thực tập:</label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Năm học:</label>
+                                <select class="form-select" name="academic_year" required>
+                                    <option value="2023-2024">2023-2024</option>
+                                    <option value="2024-2025">2024-2025</option>
+                                    <option value="2025-2026">2025-2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả:</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Học kỳ:</label>
+                                <select class="form-select" name="semester_id" required>
+                                    <!-- Filled dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày bắt đầu đăng ký:</label>
+                                <input type="date" class="form-control" name="registration_start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày kết thúc đăng ký:</label>
+                                <input type="date" class="form-control" name="registration_end_date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày bắt đầu thực tập:</label>
+                                <input type="date" class="form-control" name="start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày kết thúc thực tập:</label>
+                                <input type="date" class="form-control" name="end_date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái:</label>
+                            <select class="form-select" name="status" required>
+                                <option value="Draft">Bản nháp</option>
+                                <option value="Open">Mở đăng ký</option>
+                                <option value="Closed">Đóng đăng ký</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Session Modal -->
+    <div class="modal fade" id="editSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa đợt thực tập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="edit-session-form" action="../../controllers/admin/update_internship_session.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-session-id" name="session_id">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tên đợt thực tập:</label>
+                                <input type="text" class="form-control" id="edit-session-name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Năm học:</label>
+                                <select class="form-select" id="edit-session-academic-year" name="academic_year" required>
+                                    <option value="2023-2024">2023-2024</option>
+                                    <option value="2024-2025">2024-2025</option>
+                                    <option value="2025-2026">2025-2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả:</label>
+                            <textarea class="form-control" id="edit-session-description" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Học kỳ:</label>
+                                <select class="form-select" id="edit-session-semester" name="semester_id" required>
+                                    <!-- Filled dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày bắt đầu đăng ký:</label>
+                                <input type="date" class="form-control" id="edit-registration-start-date" name="registration_start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày kết thúc đăng ký:</label>
+                                <input type="date" class="form-control" id="edit-registration-end-date" name="registration_end_date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày bắt đầu thực tập:</label>
+                                <input type="date" class="form-control" id="edit-start-date" name="start_date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngày kết thúc thực tập:</label>
+                                <input type="date" class="form-control" id="edit-end-date" name="end_date" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái:</label>
+                            <select class="form-select" id="edit-session-status" name="status" required>
+                                <option value="Draft">Bản nháp</option>
+                                <option value="Open">Mở đăng ký</option>
+                                <option value="Closed">Đóng đăng ký</option>
+                                <option value="Finalized">Đã chốt</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Session Modal -->
+    <div class="modal fade" id="deleteSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="delete-session-form" action="../../controllers/admin/delete_internship_session.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="delete-session-id" name="session_id">
+                        <p>Bạn có chắc chắn muốn xóa đợt thực tập này?</p>
+                        <p class="text-danger">Lưu ý: Mọi dữ liệu liên quan đến đợt thực tập này sẽ bị xóa.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Finalize Session Modal -->
+    <div class="modal fade" id="finalizeSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận chốt danh sách</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="finalize-session-form" action="../../controllers/admin/finalize_internship_session.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="finalize-session-id" name="session_id">
+                        <p>Bạn có chắc chắn muốn chốt danh sách đợt thực tập này?</p>
+                        <p class="text-warning">Lưu ý: Sau khi chốt, sinh viên sẽ không thể đăng ký hoặc hủy đăng ký. Hệ thống sẽ tự động phân bổ sinh viên theo nguyện vọng.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-warning">Chốt danh sách</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Company Modal -->
+    <div class="modal fade" id="addCompanyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm công ty thực tập mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="add-company-form" action="../../controllers/admin/add_company.php" method="POST">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tên công ty:</label>
+                                <input type="text" class="form-control" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngành nghề:</label>
+                                <input type="text" class="form-control" name="industry" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ:</label>
+                            <input type="text" class="form-control" name="address" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả:</label>
+                            <textarea class="form-control" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Website:</label>
+                                <input type="url" class="form-control" name="website">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số lượng SV tối đa:</label>
+                                <input type="number" class="form-control" name="max_interns" min="1" value="5">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Người liên hệ:</label>
+                                <input type="text" class="form-control" name="contact_person">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email liên hệ:</label>
+                                <input type="email" class="form-control" name="contact_email">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số điện thoại liên hệ:</label>
+                                <input type="text" class="form-control" name="contact_phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Trạng thái:</label>
+                                <select class="form-select" name="status">
+                                    <option value="Active">Hoạt động</option>
+                                    <option value="Inactive">Không hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Company Modal -->
+    <div class="modal fade" id="editCompanyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa thông tin công ty</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="edit-company-form" action="../../controllers/admin/update_company.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-company-id" name="company_id">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Tên công ty:</label>
+                                <input type="text" class="form-control" id="edit-company-name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Ngành nghề:</label>
+                                <input type="text" class="form-control" id="edit-company-industry" name="industry" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Địa chỉ:</label>
+                            <input type="text" class="form-control" id="edit-company-address" name="address" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Mô tả:</label>
+                            <textarea class="form-control" id="edit-company-description" name="description" rows="3"></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Website:</label>
+                                <input type="url" class="form-control" id="edit-company-website" name="website">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số lượng SV tối đa:</label>
+                                <input type="number" class="form-control" id="edit-company-max-interns" name="max_interns" min="1">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Người liên hệ:</label>
+                                <input type="text" class="form-control" id="edit-company-contact-person" name="contact_person">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email liên hệ:</label>
+                                <input type="email" class="form-control" id="edit-company-contact-email" name="contact_email">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Số điện thoại liên hệ:</label>
+                                <input type="text" class="form-control" id="edit-company-contact-phone" name="contact_phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Trạng thái:</label>
+                                <select class="form-select" id="edit-company-status" name="status">
+                                    <option value="Active">Hoạt động</option>
+                                    <option value="Inactive">Không hoạt động</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Company Modal -->
+    <div class="modal fade" id="deleteCompanyModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="delete-company-form" action="../../controllers/admin/delete_company.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="delete-company-id" name="company_id">
+                        <p>Bạn có chắc chắn muốn xóa công ty này?</p>
+                        <p class="text-danger">Lưu ý: Mọi dữ liệu liên quan đến công ty này sẽ bị xóa.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Session Modal -->
+    <div class="modal fade" id="assignSessionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gán công ty vào đợt thực tập</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="assign-session-form" action="../../controllers/admin/assign_company_to_session.php" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="assign-company-id" name="company_id">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tên công ty:</label>
+                            <input type="text" class="form-control" id="assign-company-name" readonly>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Đợt thực tập:</label>
+                            <select class="form-select" id="assign-session-id" name="session_id" required>
+                                <!-- Filled dynamically -->
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Số lượng vị trí:</label>
+                            <input type="number" class="form-control" name="available_positions" min="1" value="5">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Vị trí đào tạo (ngăn cách bằng dấu phẩy):</label>
+                            <input type="text" class="form-control" name="positions" placeholder="VD: Java Developer, Frontend Developer, QA Engineer">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Ghi chú:</label>
+                            <textarea class="form-control" name="notes" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Gán vào đợt</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

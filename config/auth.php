@@ -17,16 +17,13 @@ if (!function_exists('sanitize')) {
 // Ensure database connection is established
 global $conn;
 if (!isset($conn) || $conn === null) {
-    // Try to reconnect if connection is not available
-    if (function_exists('databaseConnect')) {
-        try {
-            $conn = databaseConnect();
-        } catch (Exception $e) {
-            // Handle connection error
-            error_log("Database connection error in auth.php: " . $e->getMessage());
-        }
-    } else {
-        require_once __DIR__ . '/db_config.php';
+    // Use getDbConnection from db_config.php
+    require_once __DIR__ . '/db_config.php';
+    try {
+        $conn = getDbConnection();
+    } catch (Exception $e) {
+        // Handle connection error
+        error_log("Database connection error in auth.php: " . $e->getMessage());
     }
 }
 
@@ -199,8 +196,6 @@ function getCurrentUserType() {
 
 // Login user 
 function loginUser($username, $password, $remember = false) {
-    include_once __DIR__ . '/db_config.php';
-    
     // Sanitize inputs
     $username = trim($username);
     
@@ -240,13 +235,13 @@ function loginUser($username, $password, $remember = false) {
         $token = bin2hex(random_bytes(32));
         $expires = time() + (30 * 24 * 60 * 60); // 30 days
         
-        // Store token in database
-        execute(
-            "UPDATE users SET remember_token = ? WHERE id = ?",
-            [$token, $user['id']]
-        );
+        // Store token in database - skipping this part since remember_token column doesn't exist
+        // execute(
+        //     "UPDATE users SET remember_token = ? WHERE id = ?",
+        //     [$token, $user['id']]
+        // );
         
-        // Set cookie
+        // Just set cookie without database storage
         setcookie('remember_token', $token, $expires, '/', '', false, true);
     }
     
@@ -259,8 +254,6 @@ function loginUser($username, $password, $remember = false) {
 
 // Register new student
 function registerStudent($userData) {
-    include_once __DIR__ . '/db_config.php';
-    
     // Validate required fields
     $requiredFields = ['username', 'password', 'email', 'full_name', 'student_id'];
     foreach ($requiredFields as $field) {
@@ -360,8 +353,6 @@ function getCurrentUser() {
         return null;
     }
     
-    include_once __DIR__ . '/db_config.php';
-    
     return fetchOne(
         "SELECT * FROM users WHERE id = ?",
         [$_SESSION['user_id']]
@@ -370,8 +361,6 @@ function getCurrentUser() {
 
 // Function to handle password reset
 function generatePasswordResetToken($email) {
-    include_once __DIR__ . '/db_config.php';
-    
     // Find user by email
     $user = fetchOne(
         "SELECT * FROM users WHERE email = ?",
@@ -389,11 +378,29 @@ function generatePasswordResetToken($email) {
     $token = bin2hex(random_bytes(16));
     $expires = date('Y-m-d H:i:s', time() + 3600); // 1 hour
     
-    // Store token in database
-    execute(
-        "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
-        [$token, $expires, $user['id']]
-    );
+    // Check if the reset_token column exists before trying to use it
+    $tableInfo = fetchAll("DESCRIBE users");
+    $hasResetTokenColumn = false;
+    
+    foreach ($tableInfo as $column) {
+        if ($column['Field'] === 'reset_token') {
+            $hasResetTokenColumn = true;
+            break;
+        }
+    }
+    
+    if ($hasResetTokenColumn) {
+        // Store token in database
+        execute(
+            "UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE id = ?",
+            [$token, $expires, $user['id']]
+        );
+    } else {
+        // Store token in session as a fallback
+        $_SESSION['password_reset_token'] = $token;
+        $_SESSION['password_reset_email'] = $email;
+        $_SESSION['password_reset_expires'] = $expires;
+    }
     
     return [
         'success' => true,
@@ -404,13 +411,37 @@ function generatePasswordResetToken($email) {
 
 // Verify password reset token
 function verifyPasswordResetToken($token) {
-    include_once __DIR__ . '/db_config.php';
+    // Check if reset_token column exists
+    $tableInfo = fetchAll("DESCRIBE users");
+    $hasResetTokenColumn = false;
     
-    // Find user by token
-    $user = fetchOne(
-        "SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW()",
-        [$token]
-    );
+    foreach ($tableInfo as $column) {
+        if ($column['Field'] === 'reset_token') {
+            $hasResetTokenColumn = true;
+            break;
+        }
+    }
+    
+    if ($hasResetTokenColumn) {
+        // Find user by token in database
+        $user = fetchOne(
+            "SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW()",
+            [$token]
+        );
+    } else {
+        // Check session-based token instead
+        if (isset($_SESSION['password_reset_token']) && 
+            $_SESSION['password_reset_token'] === $token &&
+            $_SESSION['password_reset_expires'] > date('Y-m-d H:i:s')) {
+            
+            $user = fetchOne(
+                "SELECT * FROM users WHERE email = ?",
+                [$_SESSION['password_reset_email']]
+            );
+        } else {
+            $user = null;
+        }
+    }
     
     if (!$user) {
         return [
@@ -427,8 +458,6 @@ function verifyPasswordResetToken($token) {
 
 // Reset password
 function resetPassword($token, $password) {
-    include_once __DIR__ . '/db_config.php';
-    
     // Verify token
     $verification = verifyPasswordResetToken($token);
     
@@ -439,11 +468,35 @@ function resetPassword($token, $password) {
     // Hash password
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     
-    // Update password and clear token
-    execute(
-        "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
-        [$hashedPassword, $verification['user']['id']]
-    );
+    // Check if reset_token column exists
+    $tableInfo = fetchAll("DESCRIBE users");
+    $hasResetTokenColumn = false;
+    
+    foreach ($tableInfo as $column) {
+        if ($column['Field'] === 'reset_token') {
+            $hasResetTokenColumn = true;
+            break;
+        }
+    }
+    
+    if ($hasResetTokenColumn) {
+        // Update password and clear token in database
+        execute(
+            "UPDATE users SET password = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?",
+            [$hashedPassword, $verification['user']['id']]
+        );
+    } else {
+        // Just update password
+        execute(
+            "UPDATE users SET password = ? WHERE id = ?",
+            [$hashedPassword, $verification['user']['id']]
+        );
+        
+        // Clear session tokens
+        unset($_SESSION['password_reset_token']);
+        unset($_SESSION['password_reset_email']);
+        unset($_SESSION['password_reset_expires']);
+    }
     
     return [
         'success' => true,

@@ -5,16 +5,14 @@
  */
 
 // Include database configuration if not already included
-if (!function_exists('databaseConnect')) {
     require_once __DIR__ . '/db_config.php';
-}
 
 // Make sure we have a database connection
 global $conn;
 if (!isset($conn) || $conn === null) {
-    // Try to reconnect if connection is not available
+    // Use getDbConnection from db_config.php
     try {
-        $conn = databaseConnect();
+        $conn = getDbConnection();
     } catch (Exception $e) {
         // Handle connection error
         error_log("Database connection error: " . $e->getMessage());
@@ -136,8 +134,6 @@ function generatePagination($currentPage, $totalPages, $url, $params = []) {
  * @return float GPA
  */
 function calculateGPA($userId, $semesterId = null) {
-    include_once __DIR__ . '/db_config.php';
-    
     $params = [$userId];
     $semesterCondition = '';
     
@@ -231,8 +227,6 @@ function convertToLetterGrade($score) {
  * @return int Total credits
  */
 function calculateTotalCredits($userId) {
-    include_once __DIR__ . '/db_config.php';
-    
     $result = fetchOne(
         "SELECT SUM(c.credits) as total_credits
          FROM grades g
@@ -252,8 +246,6 @@ function calculateTotalCredits($userId) {
  * @return array Array of top students
  */
 function getTopStudents($limit = 3, $semesterId = null) {
-    include_once __DIR__ . '/db_config.php';
-    
     $students = fetchAll(
         "SELECT * FROM users WHERE role = 'student' AND status = 'Đang học'",
         []
@@ -301,26 +293,41 @@ function generateRandomPassword($length = 10) {
 }
 
 /**
- * Send email notification
- * 
- * @param string $to Recipient email
- * @param string $subject Email subject
- * @param string $body Email body (HTML)
- * @param string $altBody Plain text alternative
- * @return bool Success status
+ * Email class for sending notifications
  */
-function sendEmailNotification($to, $subject, $body, $altBody = '') {
-    // Use PHPMailer to send email
-    require_once __DIR__ . '/../PHPMailer/src/Exception.php';
-    require_once __DIR__ . '/../PHPMailer/src/PHPMailer.php';
-    require_once __DIR__ . '/../PHPMailer/src/SMTP.php';
+class EmailSender {
+    private $mailer;
+    private $config;
     
-    try {
-        // Load environment variables
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        // Load PHPMailer
+        require_once __DIR__ . '/../PHPMailer/src/Exception.php';
+        require_once __DIR__ . '/../PHPMailer/src/PHPMailer.php';
+        require_once __DIR__ . '/../PHPMailer/src/SMTP.php';
+        
+        // Load environment configuration
+        $this->loadConfig();
+        
+        // Initialize PHPMailer
+        $this->mailer = new PHPMailer(true);
+        $this->setupMailer();
+    }
+    
+    /**
+     * Load configuration from .env file
+     */
+    private function loadConfig() {
         $envPath = __DIR__ . '/../.env';
         
-        $envConfig = [];
+        if (!file_exists($envPath)) {
+            throw new Exception("Environment file not found");
+        }
+        
         $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        $this->config = [];
         
         foreach ($lines as $line) {
             if (strpos(trim($line), '#') === 0) {
@@ -335,48 +342,85 @@ function sendEmailNotification($to, $subject, $body, $altBody = '') {
                 // Remove quotes if present
                 $value = trim($value, "\"'");
                 
-                $envConfig[$name] = $value;
+                $this->config[$name] = $value;
             }
         }
+    }
+    
+    /**
+     * Setup PHPMailer with configuration
+     */
+    private function setupMailer() {
+        $this->mailer->isSMTP();
+        $this->mailer->Host = $this->config['MAIL_HOST'] ?? 'smtp.gmail.com';
+        $this->mailer->SMTPAuth = true;
+        $this->mailer->Username = $this->config['MAIL_USERNAME'] ?? '';
+        $this->mailer->Password = $this->config['MAIL_PASSWORD'] ?? '';
         
-        // Setup mailer
-        $mail = new PHPMailer(true);
-        
-        // Server settings
-        $mail->isSMTP();
-        $mail->Host = $envConfig['MAIL_HOST'] ?? 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = $envConfig['MAIL_USERNAME'] ?? '';
-        $mail->Password = $envConfig['MAIL_PASSWORD'] ?? '';
-        
-        if (strtolower($envConfig['MAIL_ENCRYPTION'] ?? 'tls') == 'ssl') {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        if (strtolower($this->config['MAIL_ENCRYPTION'] ?? 'tls') == 'ssl') {
+            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         } else {
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         }
         
-        $mail->Port = (int)($envConfig['MAIL_PORT'] ?? 587);
-        $mail->CharSet = 'UTF-8';
+        $this->mailer->Port = (int)($this->config['MAIL_PORT'] ?? 587);
+        $this->mailer->CharSet = 'UTF-8';
         
-        // Recipients
-        $mail->setFrom(
-            $envConfig['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com',
-            $envConfig['MAIL_FROM_NAME'] ?? 'Student Management System'
+        // Default sender
+        $this->mailer->setFrom(
+            $this->config['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com',
+            $this->config['MAIL_FROM_NAME'] ?? 'Student Management System'
         );
-        
-        $mail->addAddress($to);
-        
-        // Content
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = $body;
-        $mail->AltBody = $altBody ?: strip_tags($body);
-        
-        $mail->send();
-        return true;
+    }
+    
+    /**
+     * Send an email
+     * 
+     * @param string $to Recipient email
+     * @param string $subject Email subject
+     * @param string $body Email body (HTML)
+     * @param string $altBody Plain text alternative
+     * @return bool Success status
+     */
+    public function send($to, $subject, $body, $altBody = '') {
+        try {
+            // Reset recipients
+            $this->mailer->clearAddresses();
+            
+            // Add recipient
+            $this->mailer->addAddress($to);
+            
+            // Set content
+            $this->mailer->isHTML(true);
+            $this->mailer->Subject = $subject;
+            $this->mailer->Body = $body;
+            $this->mailer->AltBody = $altBody ?: strip_tags($body);
+            
+            // Send email
+            $this->mailer->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Email sending failed: " . $this->mailer->ErrorInfo);
+            return false;
+        }
+    }
+}
+
+/**
+ * Send email notification (legacy function for backward compatibility)
+ * 
+ * @param string $to Recipient email
+ * @param string $subject Email subject
+ * @param string $body Email body (HTML)
+ * @param string $altBody Plain text alternative
+ * @return bool Success status
+ */
+function sendEmailNotification($to, $subject, $body, $altBody = '') {
+    try {
+        $emailSender = new EmailSender();
+        return $emailSender->send($to, $subject, $body, $altBody);
     } catch (Exception $e) {
-        // Log error
-        error_log("Email sending failed: {$mail->ErrorInfo}");
+        error_log("Email configuration error: " . $e->getMessage());
         return false;
     }
 }
@@ -388,8 +432,6 @@ function sendEmailNotification($to, $subject, $body, $altBody = '') {
  * @return array Warning status and reason
  */
 function checkAcademicWarning($userId) {
-    include_once __DIR__ . '/db_config.php';
-    
     $warnings = [];
     
     // Check overall GPA
@@ -432,8 +474,6 @@ function checkAcademicWarning($userId) {
  * @return int Number of emails sent
  */
 function sendBirthdayWishes() {
-    include_once __DIR__ . '/db_config.php';
-    
     // Get students with birthday today
     $today = date('m-d');
     
@@ -451,20 +491,26 @@ function sendBirthdayWishes() {
     
     $emailsSent = 0;
     
-    foreach ($students as $student) {
-        $subject = 'Chúc mừng sinh nhật!';
-        $body = "
-            <h1>Chúc mừng sinh nhật {$student['full_name']}!</h1>
-            <p>Nhà trường xin gửi lời chúc mừng sinh nhật đến bạn.</p>
-            <p>Chúc bạn một ngày sinh nhật vui vẻ và thành công trong học tập!</p>
-            <p>Trân trọng,<br>Trường PTIT</p>
-        ";
+    try {
+        $emailSender = new EmailSender();
         
-        $sent = sendEmailNotification($student['email'], $subject, $body);
-        
-        if ($sent) {
-            $emailsSent++;
+        foreach ($students as $student) {
+            $subject = 'Chúc mừng sinh nhật!';
+            $body = "
+                <h1>Chúc mừng sinh nhật {$student['full_name']}!</h1>
+                <p>Nhà trường xin gửi lời chúc mừng sinh nhật đến bạn.</p>
+                <p>Chúc bạn một ngày sinh nhật vui vẻ và thành công trong học tập!</p>
+                <p>Trân trọng,<br>Trường PTIT</p>
+            ";
+            
+            $sent = $emailSender->send($student['email'], $subject, $body);
+            
+            if ($sent) {
+                $emailsSent++;
+            }
         }
+    } catch (Exception $e) {
+        error_log("Error sending birthday wishes: " . $e->getMessage());
     }
     
     return $emailsSent;
@@ -476,8 +522,6 @@ function sendBirthdayWishes() {
  * @return int Number of warnings sent
  */
 function sendAcademicWarnings() {
-    include_once __DIR__ . '/db_config.php';
-    
     // Get all active students
     $students = fetchAll(
         "SELECT * FROM users WHERE role = 'student' AND status = 'Đang học'",
@@ -490,34 +534,40 @@ function sendAcademicWarnings() {
     
     $warningsSent = 0;
     
-    foreach ($students as $student) {
-        $warningCheck = checkAcademicWarning($student['id']);
+    try {
+        $emailSender = new EmailSender();
         
-        if ($warningCheck['has_warning']) {
-            $subject = 'Cảnh báo học vụ';
+        foreach ($students as $student) {
+            $warningCheck = checkAcademicWarning($student['id']);
             
-            $warningMessages = '';
-            foreach ($warningCheck['warnings'] as $warning) {
-                $warningMessages .= "<li>{$warning['message']}</li>";
-            }
-            
-            $body = "
-                <h1>Cảnh báo học vụ</h1>
-                <p>Xin chào {$student['full_name']},</p>
-                <p>Hệ thống đã phát hiện các vấn đề sau trong quá trình học tập của bạn:</p>
-                <ul>
-                    $warningMessages
-                </ul>
-                <p>Vui lòng liên hệ với phòng Đào tạo để được tư vấn và hỗ trợ.</p>
-                <p>Trân trọng,<br>Trường PTIT</p>
-            ";
-            
-            $sent = sendEmailNotification($student['email'], $subject, $body);
-            
-            if ($sent) {
-                $warningsSent++;
+            if ($warningCheck['has_warning']) {
+                $subject = 'Cảnh báo học vụ';
+                
+                $warningMessages = '';
+                foreach ($warningCheck['warnings'] as $warning) {
+                    $warningMessages .= "<li>{$warning['message']}</li>";
+                }
+                
+                $body = "
+                    <h1>Cảnh báo học vụ</h1>
+                    <p>Xin chào {$student['full_name']},</p>
+                    <p>Hệ thống đã phát hiện các vấn đề sau trong quá trình học tập của bạn:</p>
+                    <ul>
+                        $warningMessages
+                    </ul>
+                    <p>Vui lòng liên hệ với phòng Đào tạo để được tư vấn và hỗ trợ.</p>
+                    <p>Trân trọng,<br>Trường PTIT</p>
+                ";
+                
+                $sent = $emailSender->send($student['email'], $subject, $body);
+                
+                if ($sent) {
+                    $warningsSent++;
+                }
             }
         }
+    } catch (Exception $e) {
+        error_log("Error sending academic warnings: " . $e->getMessage());
     }
     
     return $warningsSent;
@@ -531,8 +581,6 @@ function sendAcademicWarnings() {
  * @return array Data for export
  */
 function getExportData($type, $filters = []) {
-    include_once __DIR__ . '/db_config.php';
-    
     $data = [];
     
     switch ($type) {
@@ -607,15 +655,15 @@ function getExportData($type, $filters = []) {
 }
 
 /**
- * Sanitize inputs to prevent XSS
+ * Sanitize input to prevent XSS
  * 
  * @param mixed $input Input to sanitize
  * @return mixed Sanitized input
  */
-function sanitizeInput($input) {
+function sanitize($input) {
     if (is_array($input)) {
         foreach ($input as $key => $value) {
-            $input[$key] = sanitizeInput($value);
+            $input[$key] = sanitize($value);
         }
     } else {
         $input = htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
@@ -679,5 +727,30 @@ function setFlashMessage($message, $type = 'info') {
 function startSessionIfNotStarted() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
+    }
+}
+
+/**
+ * Check if a table exists in the database
+ *
+ * @param string $table Table name to check
+ * @return bool True if table exists, false otherwise
+ */
+function tableExists($table) {
+    global $conn;
+    
+    // Make sure we have a database connection
+    if (!isset($conn) || $conn === null) {
+        $conn = getDbConnection();
+    }
+    
+    try {
+        // Try to query the table
+        $result = $conn->query("SHOW TABLES LIKE '$table'");
+        return $result && $result->num_rows > 0;
+    } catch (Exception $e) {
+        // Log error and return false
+        error_log("Error checking if table exists: " . $e->getMessage());
+        return false;
     }
 }

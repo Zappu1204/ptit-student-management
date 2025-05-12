@@ -1,46 +1,9 @@
-<?php
-/**
- * Login page
- */
-
-// Include required files
-require_once __DIR__ . '/../../config/functions.php';
-require_once __DIR__ . '/../../config/auth.php';
-
-// Start session
-startSessionIfNotStarted();
-
-// Check if user is already logged in
-if (isLoggedIn()) {
-    // Redirect based on user role
-    if (isAdmin()) {
-        header('Location: ../admin/dashboard.php');
-    } else {
-        header('Location: ../student/dashboard.php');
-    }
-    exit;
-}
-
-// Check for errors from login attempt
-$errors = $_SESSION['login_errors'] ?? [];
-unset($_SESSION['login_errors']);
-
-// Get saved username and user type from session
-$username = $_SESSION['login_username'] ?? '';
-unset($_SESSION['login_username']);
-
-$default_user_type = $_SESSION['login_user_type'] ?? ($_GET['user_type'] ?? 'student');
-unset($_SESSION['login_user_type']);
-
-// Set page title
-$page_title = 'Đăng nhập';
-?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>PTIT Student Management System</title>
+    <title>Đăng nhập - PTIT Student Management System</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -56,6 +19,37 @@ $page_title = 'Đăng nhập';
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
+    
+    <style>
+        .auth-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            border: none;
+            overflow: hidden;
+        }
+        .auth-card .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+        }
+        .auth-logo {
+            max-height: 80px;
+            margin-bottom: 10px;
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        .auth-card .card-body {
+            padding: 30px;
+        }
+        .alert ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -67,22 +61,16 @@ $page_title = 'Đăng nhập';
                         <h4 class="mb-0">Đăng nhập</h4>
                     </div>
                     <div class="card-body p-4">
-                        <?php if (!empty($errors)): ?>
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                    <?php foreach ($errors as $error): ?>
-                                        <li><?php echo $error; ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
+                        <div id="login-errors" class="alert alert-danger d-none">
+                            <ul class="mb-0" id="error-list"></ul>
+                        </div>
                         
                         <form method="post" action="../../controllers/public/login_process.php" class="needs-validation" novalidate>
                             <div class="mb-3">
                                 <label for="user_type" class="form-label">Đăng nhập với tư cách</label>
                                 <select class="form-select" id="user_type" name="user_type" required>
-                                    <option value="student" <?php echo $default_user_type === 'student' ? 'selected' : ''; ?>>Sinh viên</option>
-                                    <option value="admin" <?php echo $default_user_type === 'admin' ? 'selected' : ''; ?>>Quản trị viên</option>
+                                    <option value="student">Sinh viên</option>
+                                    <option value="admin">Quản trị viên</option>
                                 </select>
                                 <div class="invalid-feedback">Vui lòng chọn loại tài khoản.</div>
                             </div>
@@ -91,7 +79,7 @@ $page_title = 'Đăng nhập';
                                 <label for="username" class="form-label">Tên đăng nhập</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập hoặc mã sinh viên" value="<?php echo htmlspecialchars($username); ?>" required>
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập hoặc mã sinh viên" required>
                                     <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
                                 </div>
                             </div>
@@ -112,9 +100,10 @@ $page_title = 'Đăng nhập';
                                 <input type="checkbox" class="form-check-input" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
                             </div>
-                              <div class="d-grid gap-2">
+                            
+                            <div class="d-grid gap-2">
                                 <button type="submit" class="btn btn-danger">Đăng nhập</button>
-                                <a href="../../index.php" class="btn btn-outline-secondary">Quay lại trang chủ</a>
+                                <a href="index.html" class="btn btn-outline-secondary">Quay lại trang chủ</a>
                             </div>
                         </form>
                     </div>
@@ -123,14 +112,11 @@ $page_title = 'Đăng nhập';
         </div>
     </div>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
     
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Custom Scripts -->
-    <script src="../../assets/js/script.js"></script>
     
     <script>
         // Toggle password visibility
@@ -168,6 +154,44 @@ $page_title = 'Đăng nhập';
                 }, false);
             });
         })();
+        
+        // Check for error parameters in URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const errors = urlParams.get('errors');
+            const username = urlParams.get('username');
+            const userType = urlParams.get('user_type');
+            
+            if (errors) {
+                try {
+                    const errorList = JSON.parse(decodeURIComponent(errors));
+                    const errorContainer = document.getElementById('login-errors');
+                    const errorListElem = document.getElementById('error-list');
+                    
+                    if (errorList.length > 0) {
+                        errorContainer.classList.remove('d-none');
+                        errorListElem.innerHTML = '';
+                        
+                        errorList.forEach(error => {
+                            const li = document.createElement('li');
+                            li.textContent = error;
+                            errorListElem.appendChild(li);
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing error messages:', e);
+                }
+            }
+            
+            // Restore username and user type if available
+            if (username) {
+                document.getElementById('username').value = username;
+            }
+            
+            if (userType) {
+                document.getElementById('user_type').value = userType;
+            }
+        });
     </script>
 </body>
-</html>
+</html> 

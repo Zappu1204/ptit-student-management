@@ -1,8 +1,8 @@
 <?php
 /**
- * Export Students API
+ * Get Students API
  * 
- * Exports student data to CSV with filtering options
+ * Returns paginated student data with filtering options
  */
 
 // Include required files
@@ -22,14 +22,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true || !isset(
     exit;
 }
 
-// Get filter parameters
+// Get parameters
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $classFilter = isset($_GET['class']) ? trim($_GET['class']) : '';
 $departmentFilter = isset($_GET['department']) ? trim($_GET['department']) : '';
 $genderFilter = isset($_GET['gender']) ? trim($_GET['gender']) : '';
 $statusFilter = isset($_GET['status']) ? trim($_GET['status']) : '';
 $birthYearFilter = isset($_GET['birth_year']) ? (int)$_GET['birth_year'] : 0;
-$sortField = isset($_GET['sort_field']) ? trim($_GET['sort_field']) : 'student_id';
+$sortField = isset($_GET['sort_field']) ? trim($_GET['sort_field']) : '';
 $sortOrder = isset($_GET['sort_order']) ? trim($_GET['sort_order']) : 'asc';
 
 // Validate sort parameters
@@ -39,8 +40,24 @@ if (!in_array($sortField, $allowedSortFields)) {
 }
 $sortOrder = strtolower($sortOrder) === 'desc' ? 'DESC' : 'ASC';
 
+// Set pagination parameters
+$itemsPerPage = 10;
+$offset = ($page - 1) * $itemsPerPage;
+
+// Initialize response
+$response = [
+    'error' => false,
+    'students' => [],
+    'pagination' => [
+        'current_page' => $page,
+        'items_per_page' => $itemsPerPage,
+        'total_items' => 0,
+        'total_pages' => 0
+    ]
+];
+
 try {
-    // Build the base query with role = 'student'
+    // Build the base query - users table with role = 'student'
     $baseQuery = "FROM users WHERE role = 'student'";
     
     // Add filter conditions
@@ -80,71 +97,54 @@ try {
         $params[] = $birthYearFilter;
     }
     
-    // Update base query with filters
+    // Update base query with role = 'student' condition
+    $baseQuery = "FROM users WHERE role = ?";
+    
+    // Add WHERE clause if there are additional conditions
     if (!empty($conditions)) {
         $baseQuery .= " AND " . implode(" AND ", $conditions);
     }
     
-    // Get all student data for export
-    $query = "SELECT student_id, full_name, date_of_birth, gender, class, email, phone, 
-              address, department, entry_year, status
+    // Count total items for pagination
+    $countQuery = "SELECT COUNT(*) as total " . $baseQuery;
+    $countResult = fetchOne($countQuery, $params);
+    
+    $totalItems = $countResult ? (int)$countResult['total'] : 0;
+    $totalPages = ceil($totalItems / $itemsPerPage);
+    
+    // Update pagination info
+    $response['pagination']['total_items'] = $totalItems;
+    $response['pagination']['total_pages'] = $totalPages;
+    
+    // If page is out of range, set to last page
+    if ($page > $totalPages && $totalPages > 0) {
+        $page = $totalPages;
+        $response['pagination']['current_page'] = $page;
+        $offset = ($page - 1) * $itemsPerPage;
+    }
+    
+    // Get students data with pagination
+    $query = "SELECT id, student_id, full_name, date_of_birth as dob, gender, class, email, phone, address,
+              department, entry_year, status
               " . $baseQuery . " 
-              ORDER BY " . $sortField . " " . $sortOrder;
+              ORDER BY " . $sortField . " " . $sortOrder . " LIMIT ?, ?";
+    
+    // Add pagination parameters
+    $params[] = $offset;
+    $params[] = $itemsPerPage;
     
     $students = fetchAll($query, $params);
     
-    // Set headers for CSV download
-    header('Content-Type: text/csv; charset=utf-8');
-    header('Content-Disposition: attachment; filename=students_export_' . date('Y-m-d') . '.csv');
-    
-    // Create file pointer connected to PHP output stream
-    $output = fopen('php://output', 'w');
-    
-    // Add BOM for UTF-8 encoding in Excel
-    fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
-    
-    // Set column headers
-    fputcsv($output, [
-        'Mã SV', 
-        'Họ và tên', 
-        'Ngày sinh', 
-        'Giới tính', 
-        'Lớp', 
-        'Email', 
-        'Số điện thoại', 
-        'Địa chỉ', 
-        'Khoa', 
-        'Năm nhập học', 
-        'Trạng thái'
-    ]);
-    
-    // Add data rows
-    foreach ($students as $student) {
-        fputcsv($output, [
-            $student['student_id'],
-            $student['full_name'],
-            $student['date_of_birth'],
-            $student['gender'],
-            $student['class'],
-            $student['email'],
-            $student['phone'],
-            $student['address'],
-            $student['department'],
-            $student['entry_year'],
-            $student['status']
-        ]);
-    }
-    
-    // Close the file pointer
-    fclose($output);
-    exit;
+    $response['students'] = $students;
     
 } catch (Exception $e) {
-    // If error occurs, return JSON error response
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => true,
-        'message' => 'Error exporting students data: ' . $e->getMessage()
-    ]);
-    exit;
-} 
+    $response['error'] = true;
+    $response['message'] = 'Error fetching students data: ' . $e->getMessage();
+}
+
+// Set JSON header
+header('Content-Type: application/json');
+
+// Output JSON response
+echo json_encode($response);
+exit; 

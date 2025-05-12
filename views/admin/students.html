@@ -19,84 +19,39 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
 </head>
 <body>
-    <!-- Header would normally be included here -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-2">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
-                <i class="fas fa-graduation-cap me-2"></i>
-                <span>PTIT Student Management</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <span class="nav-link">
-                            <i class="fas fa-user me-1"></i> Admin
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../controllers/public/logout_process.php">
-                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </header>
+    <!-- Header Section (loaded dynamically) -->
+    <div id="header"></div>
 
     <div class="container-fluid py-4">
         <div class="row">
-            <!-- Admin sidebar -->
-            <div class="col-md-3 col-lg-2">
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-danger text-white">
-                        <h5 class="mb-0">Admin Dashboard</h5>
-                    </div>
-                    <div class="list-group list-group-flush">
-                        <a href="dashboard.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-tachometer-alt me-2"></i> Trang chủ
-                        </a>
-                        <a href="students.html" class="list-group-item list-group-item-action active">
-                            <i class="fas fa-user-graduate me-2"></i> Quản lý Sinh viên
-                        </a>
-                        <a href="subjects.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-book me-2"></i> Quản lý Môn học
-                        </a>
-                        <a href="grades.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-chart-bar me-2"></i> Quản lý Điểm số
-                        </a>
-                        <a href="semesters.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-calendar-alt me-2"></i> Quản lý Học kỳ
-                        </a>
-                        <a href="reports.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-file-alt me-2"></i> Báo cáo
-                        </a>
-                        <a href="notifications.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-bell me-2"></i> Thông báo
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!-- Admin sidebar (loaded dynamically) -->
+            <div id="admin-sidebar" class="col-md-3 col-lg-2"></div>
             
             <div class="col-md-9 col-lg-10">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2>Quản lý Sinh viên</h2>
+                    <div>
+                        <button type="button" class="btn btn-info me-2" id="exportBtn">
+                            <i class="fas fa-file-export me-1"></i> Xuất CSV
+                        </button>
                     <a href="student_add.html" class="btn btn-success">
                         <i class="fas fa-user-plus me-2"></i> Thêm Sinh viên
                     </a>
+                    </div>
                 </div>
                 
                 <div id="message-container"></div>
                 
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-body">
-                        <form id="searchForm" class="mb-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <form id="searchForm">
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Tìm kiếm sinh viên (Mã SV, Tên, Lớp)..." name="search" id="searchInput">
                                 <button class="btn btn-danger" type="submit">
@@ -104,6 +59,61 @@
                                 </button>
                             </div>
                         </form>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex flex-wrap justify-content-md-end">
+                                    <select class="form-select me-2 mb-2" style="width: auto;" id="classFilter">
+                                        <option value="">-- Lọc theo lớp --</option>
+                                    </select>
+                                    <select class="form-select me-2 mb-2" style="width: auto;" id="departmentFilter">
+                                        <option value="">-- Khoa --</option>
+                                    </select>
+                                    <select class="form-select me-2 mb-2" style="width: auto;" id="genderFilter">
+                                        <option value="">-- Giới tính --</option>
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                    <select class="form-select me-2 mb-2" style="width: auto;" id="statusFilter">
+                                        <option value="">-- Trạng thái --</option>
+                                        <option value="Đang học">Đang học</option>
+                                        <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                                        <option value="Bảo lưu">Bảo lưu</option>
+                                        <option value="Đình chỉ">Đình chỉ</option>
+                                    </select>
+                                    <select class="form-select mb-2" style="width: auto;" id="birthYearFilter">
+                                        <option value="">-- Năm sinh --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="d-flex flex-wrap align-items-center">
+                                    <label class="me-2 mb-2">Sắp xếp theo:</label>
+                                    <div class="btn-group mb-2 me-2">
+                                        <button type="button" class="btn btn-outline-secondary sort-btn" data-field="student_id" data-order="asc">
+                                            Mã SV <i class="fas fa-sort"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary sort-btn" data-field="full_name" data-order="asc">
+                                            Họ tên <i class="fas fa-sort"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary sort-btn" data-field="date_of_birth" data-order="asc">
+                                            Ngày sinh <i class="fas fa-sort"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary sort-btn" data-field="class" data-order="asc">
+                                            Lớp <i class="fas fa-sort"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary sort-btn" data-field="status" data-order="asc">
+                                            Trạng thái <i class="fas fa-sort"></i>
+                                        </button>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary mb-2" id="clearFiltersBtn">
+                                        <i class="fas fa-times me-1"></i> Xóa bộ lọc
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                         
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered" id="studentsTable">
@@ -114,14 +124,15 @@
                                         <th>Ngày sinh</th>
                                         <th>Giới tính</th>
                                         <th>Lớp</th>
-                                        <th>Email</th>
+                                        <th>Khoa</th>
+                                        <th>Trạng thái</th>
                                         <th>Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody id="studentsTableBody">
                                     <!-- Data will be loaded here via AJAX -->
                                     <tr>
-                                        <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
+                                        <td colspan="8" class="text-center">Đang tải dữ liệu...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -138,53 +149,245 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
+    
+    <!-- View Student Modal -->
+    <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title" id="viewModalLabel">Thông tin sinh viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Mã sinh viên:</strong> <span id="view-student-id"></span></p>
+                            <p><strong>Họ và tên:</strong> <span id="view-full-name"></span></p>
+                            <p><strong>Ngày sinh:</strong> <span id="view-dob"></span></p>
+                            <p><strong>Giới tính:</strong> <span id="view-gender"></span></p>
+                            <p><strong>Lớp:</strong> <span id="view-class"></span></p>
+                            <p><strong>Khoa:</strong> <span id="view-department"></span></p>
+                        </div>
                 <div class="col-md-6">
-                    <h5>PTIT Student Management System</h5>
-                    <p>Hệ thống quản lý sinh viên hiện đại, tiện lợi và dễ sử dụng.</p>
+                            <p><strong>Email:</strong> <span id="view-email"></span></p>
+                            <p><strong>Số điện thoại:</strong> <span id="view-phone"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="view-address"></span></p>
+                            <p><strong>Năm nhập học:</strong> <span id="view-entry-year"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="view-status"></span></p>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="../../controllers/public/logout_process.php" class="text-white">Đăng xuất</a></li>
-                    </ul>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-warning" id="editFromViewBtn">
+                        <i class="fas fa-edit me-1"></i> Chỉnh sửa
+                    </button>
                 </div>
-                <div class="col-md-3">
-                    <h5>Liên hệ</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> Hà Nội, Việt Nam</li>
-                        <li><i class="fas fa-envelope me-2"></i> info@ptit.edu.vn</li>
-                        <li><i class="fas fa-phone me-2"></i> (84) 123 456 789</li>
-                    </ul>
-                </div>
-            </div>
-            <hr>
-            <div class="text-center">
-                <p class="mb-0">© 2025 PTIT Student Management System. All rights reserved.</p>
             </div>
         </div>
-    </footer>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="addModalLabel">Thêm sinh viên mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStudentForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="add-student-id" class="form-label">Mã sinh viên</label>
+                                <input type="text" class="form-control" id="add-student-id" name="student_id" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-username" class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="add-username" name="username" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-full-name" class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" id="add-full-name" name="full_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-password" class="form-label">Mật khẩu</label>
+                                <input type="password" class="form-control" id="add-password" name="password" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="add-email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-dob" class="form-label">Ngày sinh</label>
+                                <input type="date" class="form-control" id="add-dob" name="date_of_birth">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-gender" class="form-label">Giới tính</label>
+                                <select class="form-select" id="add-gender" name="gender">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-class" class="form-label">Lớp</label>
+                                <input type="text" class="form-control" id="add-class" name="class">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-department" class="form-label">Khoa</label>
+                                <input type="text" class="form-control" id="add-department" name="department">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-entry-year" class="form-label">Năm nhập học</label>
+                                <input type="number" class="form-control" id="add-entry-year" name="entry_year">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-phone" class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="add-phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="add-status" class="form-label">Trạng thái</label>
+                                <select class="form-select" id="add-status" name="status">
+                                    <option value="Đang học">Đang học</option>
+                                    <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                                    <option value="Bảo lưu">Bảo lưu</option>
+                                    <option value="Đình chỉ">Đình chỉ</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="add-address" class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" id="add-address" name="address" rows="2"></textarea>
+                            </div>
+                        </div>
+                        <div id="add-error-message" class="alert alert-danger mt-3" style="display: none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-success" id="saveStudentBtn">
+                        <i class="fas fa-save me-1"></i> Lưu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Student Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="editModalLabel">Chỉnh sửa sinh viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editStudentForm">
+                        <input type="hidden" id="edit-id" name="id">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-student-id" class="form-label">Mã sinh viên</label>
+                                <input type="text" class="form-control" id="edit-student-id" name="student_id" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-username" class="form-label">Tên đăng nhập</label>
+                                <input type="text" class="form-control" id="edit-username" name="username" readonly>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-full-name" class="form-label">Họ và tên</label>
+                                <input type="text" class="form-control" id="edit-full-name" name="full_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="edit-email" name="email" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-dob" class="form-label">Ngày sinh</label>
+                                <input type="date" class="form-control" id="edit-dob" name="date_of_birth">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-gender" class="form-label">Giới tính</label>
+                                <select class="form-select" id="edit-gender" name="gender">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-class" class="form-label">Lớp</label>
+                                <input type="text" class="form-control" id="edit-class" name="class">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-department" class="form-label">Khoa</label>
+                                <input type="text" class="form-control" id="edit-department" name="department">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-entry-year" class="form-label">Năm nhập học</label>
+                                <input type="number" class="form-control" id="edit-entry-year" name="entry_year">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-phone" class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="edit-phone" name="phone">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit-status" class="form-label">Trạng thái</label>
+                                <select class="form-select" id="edit-status" name="status">
+                                    <option value="Đang học">Đang học</option>
+                                    <option value="Đã tốt nghiệp">Đã tốt nghiệp</option>
+                                    <option value="Bảo lưu">Bảo lưu</option>
+                                    <option value="Đình chỉ">Đình chỉ</option>
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label for="edit-address" class="form-label">Địa chỉ</label>
+                                <textarea class="form-control" id="edit-address" name="address" rows="2"></textarea>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="edit-reset-password">
+                                    <label class="form-check-label" for="edit-reset-password">
+                                        Đặt lại mật khẩu
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3" id="edit-password-container" style="display: none;">
+                                <label for="edit-password" class="form-label">Mật khẩu mới</label>
+                                <input type="password" class="form-control" id="edit-password" name="password">
+                            </div>
+                        </div>
+                        <div id="edit-error-message" class="alert alert-danger mt-3" style="display: none;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-warning" id="updateStudentBtn">
+                        <i class="fas fa-save me-1"></i> Cập nhật
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <!-- Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-danger text-white">
                     <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Bạn có chắc chắn muốn xóa sinh viên này?
+                    <p>Bạn có chắc chắn muốn xóa sinh viên <strong id="delete-student-name"></strong>?</p>
+                    <p class="text-danger"><small>Hành động này không thể hoàn tác. Tất cả dữ liệu liên quan đến sinh viên này sẽ bị xóa vĩnh viễn.</small></p>
+                    <input type="hidden" id="delete-student-id" value="">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <form id="deleteForm" action="../../controllers/admin/student_delete_process.php" method="post">
-                        <input type="hidden" id="deleteStudentId" name="student_id">
-                        <button type="submit" class="btn btn-danger">Xóa</button>
-                    </form>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="fas fa-trash-alt me-1"></i> Xóa
+                    </button>
                 </div>
             </div>
         </div>
@@ -202,101 +405,917 @@
     
     <!-- Custom Script -->
     <script>
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active link in the sidebar
+            document.querySelectorAll('#sidebar-students').forEach(link => {
+                link.classList.add('active');
+            });
+            
+            // Initialize filters
+            initializeFilters();
+            
             // Load students data
             loadStudents();
             
             // Search form submit
-            $('#searchForm').on('submit', function(e) {
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                loadStudents(1, $('#searchInput').val());
+                loadStudents(1, document.getElementById('searchInput').value);
             });
             
-            // Set up delete modal
-            $('#deleteModal').on('show.bs.modal', function (event) {
-                var button = $(event.relatedTarget);
-                var studentId = button.data('student-id');
-                $('#deleteStudentId').val(studentId);
+            // Filter change events
+            document.getElementById('classFilter').addEventListener('change', applyFilters);
+            document.getElementById('departmentFilter').addEventListener('change', applyFilters);
+            document.getElementById('genderFilter').addEventListener('change', applyFilters);
+            document.getElementById('statusFilter').addEventListener('change', applyFilters);
+            document.getElementById('birthYearFilter').addEventListener('change', applyFilters);
+            
+            // Sorting buttons
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const field = this.getAttribute('data-field');
+                    let order = this.getAttribute('data-order');
+                    
+                    // Toggle order
+                    order = order === 'asc' ? 'desc' : 'asc';
+                    this.setAttribute('data-order', order);
+                    
+                    // Update icon
+                    const icon = this.querySelector('i');
+                    icon.className = order === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+                    
+                    // Reset other buttons
+                    document.querySelectorAll('.sort-btn').forEach(otherBtn => {
+                        if (otherBtn !== this) {
+                            otherBtn.setAttribute('data-order', 'asc');
+                            otherBtn.querySelector('i').className = 'fas fa-sort';
+                        }
+                    });
+                    
+                    // Apply sorting
+                    applySorting(field, order);
+                });
+            });
+            
+            // Clear filters button
+            document.getElementById('clearFiltersBtn').addEventListener('click', clearFilters);
+            
+            // Export button click
+            document.getElementById('exportBtn').addEventListener('click', function() {
+                exportStudents();
+            });
+            
+            // Add student button click
+            document.querySelector('.btn-success[href="student_add.html"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                openAddModal();
+            });
+            
+            // Save new student
+            document.getElementById('saveStudentBtn').addEventListener('click', function() {
+                saveStudent();
+            });
+            
+            // Update student
+            document.getElementById('updateStudentBtn').addEventListener('click', function() {
+                updateStudent();
+            });
+            
+            // Edit from view button
+            document.getElementById('editFromViewBtn').addEventListener('click', function() {
+                const studentIdElem = document.getElementById('view-student-id');
+                if (studentIdElem) {
+                    const studentId = studentIdElem.getAttribute('data-id');
+                    if (studentId) {
+                        // Close view modal first
+                        const viewModal = bootstrap.Modal.getInstance(document.getElementById('viewModal'));
+                        if (viewModal) {
+                            viewModal.hide();
+                        }
+                        
+                        // Open edit modal with delay to allow view modal to close
+                        setTimeout(() => {
+                            editStudent(studentId);
+                        }, 300);
+                    }
+                }
+            });
+            
+            // Confirm delete button
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                deleteStudent();
+            });
+            
+            // Reset password checkbox change
+            document.getElementById('edit-reset-password').addEventListener('change', function() {
+                document.getElementById('edit-password-container').style.display = this.checked ? 'block' : 'none';
             });
         });
         
-        function loadStudents(page = 1, search = '') {
-            $.ajax({
-                url: '../../controllers/admin/get_students.php',
-                type: 'GET',
-                data: {
-                    page: page,
-                    search: search
-                },
-                dataType: 'json',
-                success: function(data) {
-                    renderStudents(data.students);
-                    renderPagination(data.pagination);
-                },
-                error: function() {
-                    $('#studentsTableBody').html('<tr><td colspan="7" class="text-center">Không thể tải dữ liệu. Vui lòng thử lại sau.</td></tr>');
-                }
-            });
+        // Initialize the filter dropdowns
+        function initializeFilters() {
+            // Fetch unique class names
+            fetch('../../controllers/admin/get_classes.php')
+                .then(response => response.json())
+                .then(data => {
+                    const classFilter = document.getElementById('classFilter');
+                    data.classes.forEach(className => {
+                        const option = document.createElement('option');
+                        option.value = className;
+                        option.textContent = className;
+                        classFilter.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching classes:', error));
+            
+            // Fetch unique departments
+            fetch('../../controllers/admin/get_departments.php')
+                .then(response => response.json())
+                .then(data => {
+                    const departmentFilter = document.getElementById('departmentFilter');
+                    data.departments.forEach(department => {
+                        const option = document.createElement('option');
+                        option.value = department;
+                        option.textContent = department;
+                        departmentFilter.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching departments:', error));
+            
+            // Fetch unique birth years
+            fetch('../../controllers/admin/get_birth_years.php')
+                .then(response => response.json())
+                .then(data => {
+                    const birthYearFilter = document.getElementById('birthYearFilter');
+                    data.birth_years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        birthYearFilter.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching birth years:', error));
         }
         
+        // Apply all filters and reload students
+        function applyFilters() {
+            const classValue = document.getElementById('classFilter').value;
+            const departmentValue = document.getElementById('departmentFilter').value;
+            const genderValue = document.getElementById('genderFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const birthYearValue = document.getElementById('birthYearFilter').value;
+            const searchValue = document.getElementById('searchInput').value;
+            
+            // Get sorting if available
+            const activeSort = document.querySelector('.sort-btn[data-order="desc"], .sort-btn[data-order="asc"]');
+            let sortField = '';
+            let sortOrder = '';
+            
+            if (activeSort) {
+                sortField = activeSort.getAttribute('data-field');
+                sortOrder = activeSort.getAttribute('data-order');
+            }
+            
+            loadStudents(1, searchValue, classValue, departmentValue, genderValue, statusValue, birthYearValue, sortField, sortOrder);
+        }
+        
+        // Apply sorting
+        function applySorting(field, order) {
+            const classValue = document.getElementById('classFilter').value;
+            const departmentValue = document.getElementById('departmentFilter').value;
+            const genderValue = document.getElementById('genderFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const birthYearValue = document.getElementById('birthYearFilter').value;
+            const searchValue = document.getElementById('searchInput').value;
+            
+            loadStudents(1, searchValue, classValue, departmentValue, genderValue, statusValue, birthYearValue, field, order);
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            // Reset filter selects
+            document.getElementById('classFilter').value = '';
+            document.getElementById('departmentFilter').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('birthYearFilter').value = '';
+            document.getElementById('searchInput').value = '';
+            
+            // Reset sort buttons
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.setAttribute('data-order', 'asc');
+                btn.querySelector('i').className = 'fas fa-sort';
+            });
+            
+            // Reload students without filters
+            loadStudents();
+        }
+        
+        // Load students with pagination and filters
+        function loadStudents(page = 1, search = '', classFilter = '', departmentFilter = '', genderFilter = '', statusFilter = '', birthYearFilter = '', sortField = '', sortOrder = '') {
+            // Show loading state
+            document.getElementById('studentsTableBody').innerHTML = '<tr><td colspan="8" class="text-center">Đang tải dữ liệu...</td></tr>';
+            
+            // Build query parameters
+            const params = new URLSearchParams();
+            params.append('page', page);
+            if (search) params.append('search', search);
+            if (classFilter) params.append('class', classFilter);
+            if (departmentFilter) params.append('department', departmentFilter);
+            if (genderFilter) params.append('gender', genderFilter);
+            if (statusFilter) params.append('status', statusFilter);
+            if (birthYearFilter) params.append('birth_year', birthYearFilter);
+            if (sortField) params.append('sort_field', sortField);
+            if (sortOrder) params.append('sort_order', sortOrder);
+            
+            // Fetch students data
+            fetch(`../../controllers/admin/get_students.php?${params.toString()}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderStudents(data.students);
+                    renderPagination(data.pagination, search, classFilter, departmentFilter, genderFilter, statusFilter, birthYearFilter, sortField, sortOrder);
+                })
+                .catch(error => {
+                    console.error('Error fetching students:', error);
+                    document.getElementById('studentsTableBody').innerHTML = 
+                        '<tr><td colspan="8" class="text-center">Không thể tải dữ liệu. Vui lòng thử lại sau.</td></tr>';
+                });
+        }
+        
+        // Render students in the table
         function renderStudents(students) {
+            const tableBody = document.getElementById('studentsTableBody');
+            
             if (students.length > 0) {
-                var html = '';
+                let html = '';
                 
                 students.forEach(function(student) {
                     html += '<tr>';
-                    html += '<td>' + student.student_id + '</td>';
-                    html += '<td>' + student.full_name + '</td>';
+                    html += '<td>' + escapeHtml(student.student_id) + '</td>';
+                    html += '<td>' + escapeHtml(student.full_name) + '</td>';
                     html += '<td>' + formatDate(student.dob) + '</td>';
-                    html += '<td>' + student.gender + '</td>';
-                    html += '<td>' + student.class + '</td>';
-                    html += '<td>' + student.email + '</td>';
+                    html += '<td>' + escapeHtml(student.gender) + '</td>';
+                    html += '<td>' + escapeHtml(student.class) + '</td>';
+                    html += '<td>' + escapeHtml(student.department) + '</td>';
+                    html += '<td>' + escapeHtml(student.status) + '</td>';
                     html += '<td>';
                     html += '<div class="btn-group btn-group-sm">';
-                    html += '<a href="student_view.html?id=' + student.student_id + '" class="btn btn-info" title="Xem"><i class="fas fa-eye"></i></a>';
-                    html += '<a href="student_edit.html?id=' + student.student_id + '" class="btn btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>';
-                    html += '<button type="button" class="btn btn-danger" title="Xóa" data-bs-toggle="modal" data-bs-target="#deleteModal" data-student-id="' + student.student_id + '"><i class="fas fa-trash-alt"></i></button>';
+                    html += '<button type="button" class="btn btn-info view-btn" data-id="' + student.id + '" title="Xem"><i class="fas fa-eye"></i></button>';
+                    html += '<button type="button" class="btn btn-warning edit-btn" data-id="' + student.id + '" title="Sửa"><i class="fas fa-edit"></i></button>';
+                    html += '<button type="button" class="btn btn-danger delete-btn" data-id="' + student.id + '" data-name="' + escapeHtml(student.full_name) + '" title="Xóa"><i class="fas fa-trash-alt"></i></button>';
                     html += '</div>';
                     html += '</td>';
                     html += '</tr>';
                 });
                 
-                $('#studentsTableBody').html(html);
+                tableBody.innerHTML = html;
+                
+                // Add event listeners to buttons
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const studentId = this.getAttribute('data-id');
+                        viewStudent(studentId);
+                    });
+                });
+                
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const studentId = this.getAttribute('data-id');
+                        editStudent(studentId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const studentId = this.getAttribute('data-id');
+                        const studentName = this.getAttribute('data-name');
+                        confirmDelete(studentId, studentName);
+                    });
+                });
             } else {
-                $('#studentsTableBody').html('<tr><td colspan="7" class="text-center">Không tìm thấy sinh viên nào.</td></tr>');
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center">Không tìm thấy sinh viên nào.</td></tr>';
             }
         }
         
-        function renderPagination(pagination) {
+        // Render pagination controls
+        function renderPagination(pagination, search = '', classFilter = '', departmentFilter = '', genderFilter = '', statusFilter = '', birthYearFilter = '', sortField = '', sortOrder = '') {
+            const paginationElement = document.getElementById('pagination');
+            
             if (pagination.total_pages > 1) {
-                var html = '';
+                let html = '';
                 
                 // Previous button
                 html += '<li class="page-item ' + (pagination.current_page === 1 ? 'disabled' : '') + '">';
-                html += '<a class="page-link" href="#" onclick="loadStudents(' + (pagination.current_page - 1) + ', $(\'#searchInput\').val()); return false;">&laquo;</a>';
+                html += '<a class="page-link" href="#" data-page="' + (pagination.current_page - 1) + '">&laquo;</a>';
                 html += '</li>';
                 
                 // Page numbers
-                for (var i = 1; i <= pagination.total_pages; i++) {
+                for (let i = 1; i <= pagination.total_pages; i++) {
                     html += '<li class="page-item ' + (pagination.current_page === i ? 'active' : '') + '">';
-                    html += '<a class="page-link" href="#" onclick="loadStudents(' + i + ', $(\'#searchInput\').val()); return false;">' + i + '</a>';
+                    html += '<a class="page-link" href="#" data-page="' + i + '">' + i + '</a>';
                     html += '</li>';
                 }
                 
                 // Next button
                 html += '<li class="page-item ' + (pagination.current_page === pagination.total_pages ? 'disabled' : '') + '">';
-                html += '<a class="page-link" href="#" onclick="loadStudents(' + (pagination.current_page + 1) + ', $(\'#searchInput\').val()); return false;">&raquo;</a>';
+                html += '<a class="page-link" href="#" data-page="' + (pagination.current_page + 1) + '">&raquo;</a>';
                 html += '</li>';
                 
-                $('#pagination').html(html);
+                paginationElement.innerHTML = html;
+                
+                // Add event listeners to pagination links
+                document.querySelectorAll('#pagination .page-link').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = parseInt(this.getAttribute('data-page'));
+                        if (!isNaN(page)) {
+                            loadStudents(page, search, classFilter, departmentFilter, genderFilter, statusFilter, birthYearFilter, sortField, sortOrder);
+                        }
+                    });
+                });
             } else {
-                $('#pagination').html('');
+                paginationElement.innerHTML = '';
             }
         }
         
+        // Format date to local format
         function formatDate(dateString) {
+            if (!dateString) return '';
             const date = new Date(dateString);
             return date.toLocaleDateString('vi-VN');
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+        
+        // Export students to CSV with current filters
+        function exportStudents() {
+            const classValue = document.getElementById('classFilter').value;
+            const departmentValue = document.getElementById('departmentFilter').value;
+            const genderValue = document.getElementById('genderFilter').value;
+            const statusValue = document.getElementById('statusFilter').value;
+            const birthYearValue = document.getElementById('birthYearFilter').value;
+            const searchValue = document.getElementById('searchInput').value;
+            
+            // Get sorting if available
+            const activeSort = document.querySelector('.sort-btn[data-order="desc"], .sort-btn[data-order="asc"]');
+            let sortField = '';
+            let sortOrder = '';
+            
+            if (activeSort) {
+                sortField = activeSort.getAttribute('data-field');
+                sortOrder = activeSort.getAttribute('data-order');
+            }
+            
+            // Build query parameters
+            const params = new URLSearchParams();
+            if (searchValue) params.append('search', searchValue);
+            if (classValue) params.append('class', classValue);
+            if (departmentValue) params.append('department', departmentValue);
+            if (genderValue) params.append('gender', genderValue);
+            if (statusValue) params.append('status', statusValue);
+            if (birthYearValue) params.append('birth_year', birthYearValue);
+            if (sortField) params.append('sort_field', sortField);
+            if (sortOrder) params.append('sort_order', sortOrder);
+            
+            // Redirect to export endpoint
+            window.location.href = `../../controllers/admin/export_students.php?${params.toString()}`;
+        }
+
+        // Initialize the modal for adding a new student
+        function openAddModal() {
+            // Reset form
+            document.getElementById('addStudentForm').reset();
+            document.getElementById('add-error-message').style.display = 'none';
+            
+            // Setup field validation and auto-generation events
+            setupAddFormEvents();
+            
+            // Show modal
+            const addModal = new bootstrap.Modal(document.getElementById('addModal'));
+            addModal.show();
+        }
+
+        // Setup events for add student form fields
+        function setupAddFormEvents() {
+            // Auto-generate username when student ID changes
+            document.getElementById('add-student-id').addEventListener('input', function() {
+                const studentId = this.value.trim();
+                if (studentId) {
+                    document.getElementById('add-username').value = studentId;
+                }
+            });
+
+            function removeVietnameseAccents(str) {
+                return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+            }
+            
+            // Auto-generate email when name or student ID changes
+            function updateEmail() {
+                const fullName = document.getElementById('add-full-name').value.trim();
+                const studentId = document.getElementById('add-student-id').value.trim();
+                
+                if (fullName && studentId) {
+                    // Extract initials and last name
+                    const cleanFullName = removeVietnameseAccents(fullName);
+
+                    // Tách tên thành mảng
+                    const nameParts = cleanFullName.split(' ').filter(Boolean);
+                    let initials = '';
+                    
+                    if (nameParts.length > 1) {
+                        // Get last name
+                        const lastName = nameParts[0];
+                        
+                        // Get initials from middle and first name
+                        for (let i = 1; i < nameParts.length; i++) {
+                            if (nameParts[i]) {
+                                initials += nameParts[i][0] || '';
+                            }
+                        }
+                        
+                        // Create email in format: AnNV.B22CN123@stu.ptit.edu.vn
+                        const email = lastName + initials.toUpperCase() + '.' + studentId + '@stu.ptit.edu.vn';
+                        document.getElementById('add-email').value = email;
+                    }
+                }
+            }
+            
+            document.getElementById('add-full-name').addEventListener('input', updateEmail);
+            document.getElementById('add-student-id').addEventListener('input', updateEmail);
+            
+            // Validate entry year
+            document.getElementById('add-entry-year').addEventListener('input', function() {
+                const year = parseInt(this.value);
+                const errorMsg = document.getElementById('add-entry-year-error');
+                
+                if (errorMsg) {
+                    errorMsg.remove();
+                }
+                
+                if (isNaN(year) || year < 2000 || year > 2100) {
+                    const errorElement = document.createElement('div');
+                    errorElement.id = 'add-entry-year-error';
+                    errorElement.className = 'text-danger small mt-1';
+                    errorElement.textContent = 'Năm nhập học phải từ 2000 đến 2100';
+                    this.parentNode.appendChild(errorElement);
+                }
+            });
+        }
+
+        // Validate add student form before submission
+        function validateAddStudentForm() {
+            const form = document.getElementById('addStudentForm');
+            const studentId = document.getElementById('add-student-id').value.trim();
+            const username = document.getElementById('add-username').value.trim();
+            const fullName = document.getElementById('add-full-name').value.trim();
+            const password = document.getElementById('add-password').value;
+            const email = document.getElementById('add-email').value.trim();
+            const entryYear = document.getElementById('add-entry-year').value.trim();
+            
+            // Check required fields
+            if (!studentId || !username || !fullName || !password || !email) {
+                showFormError('add-error-message', 'Vui lòng điền đầy đủ các trường bắt buộc');
+                return false;
+            }
+            
+            // Validate student ID format (e.g., B22CN123)
+            if (!/^[A-Z][0-9]{2}[A-Z]{2}[0-9]{3}$/.test(studentId)) {
+                showFormError('add-error-message', 'Mã sinh viên không đúng định dạng (VD: B22CN123)');
+                return false;
+            }
+            
+            // Validate full name (at least 2 words)
+            if (fullName.split(' ').filter(part => part.length > 0).length < 2) {
+                showFormError('add-error-message', 'Họ và tên phải có ít nhất 2 từ');
+                return false;
+            }
+            
+            // Validate email format
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showFormError('add-error-message', 'Email không đúng định dạng');
+                return false;
+            }
+            
+            // Validate password (at least 6 characters)
+            if (password.length < 6) {
+                showFormError('add-error-message', 'Mật khẩu phải có ít nhất 6 ký tự');
+                return false;
+            }
+            
+            // Validate entry year if provided
+            if (entryYear) {
+                const year = parseInt(entryYear);
+                if (isNaN(year) || year < 2000 || year > 2100) {
+                    showFormError('add-error-message', 'Năm nhập học phải từ 2000 đến 2100');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Show error message in specified element
+        function showFormError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+        }
+
+        // Save new student with validation
+        function saveStudent() {
+            // Validate form first
+            if (!validateAddStudentForm()) {
+                return;
+            }
+            
+            // Get form data
+            const form = document.getElementById('addStudentForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Show loading on button
+            const saveBtn = document.getElementById('saveStudentBtn');
+            const originalBtnText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang lưu...';
+            saveBtn.disabled = true;
+            
+            // Hide error message
+            document.getElementById('add-error-message').style.display = 'none';
+            
+            // Send data to server
+            fetch('../../controllers/admin/add_student.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
+                    
+                    if (data.error) {
+                        // Show error message
+                        const errorEl = document.getElementById('add-error-message');
+                        errorEl.textContent = data.message || 'Có lỗi xảy ra khi thêm sinh viên.';
+                        errorEl.style.display = 'block';
+                    } else {
+                        // Close modal and reload students
+                        bootstrap.Modal.getInstance(document.getElementById('addModal')).hide();
+                        
+                        // Show success message
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = `
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Đã thêm sinh viên mới thành công.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        
+                        // Reload students
+                        loadStudents();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding student:', error);
+                    
+                    // Reset button
+                    saveBtn.innerHTML = originalBtnText;
+                    saveBtn.disabled = false;
+                    
+                    // Show error message
+                    const errorEl = document.getElementById('add-error-message');
+                    errorEl.textContent = 'Lỗi kết nối: ' + error.message;
+                    errorEl.style.display = 'block';
+                });
+        }
+
+        // View student details
+        function viewStudent(studentId) {
+            // Store original modal body content
+            const viewModalBodyOriginal = document.querySelector('#viewModal .modal-body').innerHTML;
+            
+            // Show loading
+            document.querySelector('#viewModal .modal-body').innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải dữ liệu...</p></div>';
+            
+            // Show modal
+            const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+            viewModal.show();
+            
+            // Fetch student data
+            fetch(`../../controllers/admin/get_student.php?id=${studentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.message);
+                    }
+                    
+                    // Restore original modal body content first
+                    document.querySelector('#viewModal .modal-body').innerHTML = viewModalBodyOriginal;
+                    
+                    // Now update modal with student data
+                    const studentIdElem = document.getElementById('view-student-id');
+                    if (studentIdElem) {
+                        studentIdElem.textContent = data.student_id;
+                        studentIdElem.setAttribute('data-id', data.id);
+                    }
+                    
+                    setElementText('view-full-name', data.full_name);
+                    setElementText('view-dob', formatDate(data.date_of_birth));
+                    setElementText('view-gender', data.gender);
+                    setElementText('view-class', data.class || 'N/A');
+                    setElementText('view-department', data.department || 'N/A');
+                    setElementText('view-email', data.email);
+                    setElementText('view-phone', data.phone || 'N/A');
+                    setElementText('view-address', data.address || 'N/A');
+                    setElementText('view-entry-year', data.entry_year || 'N/A');
+                    setElementText('view-status', data.status);
+                })
+                .catch(error => {
+                    console.error('Error fetching student:', error);
+                    document.querySelector('#viewModal .modal-body').innerHTML = `<div class="alert alert-danger">Không thể tải thông tin sinh viên: ${error.message}</div>`;
+                });
+        }
+
+        // Helper function to safely set element text content
+        function setElementText(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = value;
+            }
+        }
+
+        // Helper function to safely set form field value
+        function setFormValue(elementId, value) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.value = value || '';
+            }
+        }
+
+        // Edit student
+        function editStudent(studentId) {
+            // Store original form content
+            const editFormOriginal = document.getElementById('editStudentForm').outerHTML;
+            
+            // Show loading
+            document.querySelector('#editModal .modal-body').innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải dữ liệu...</p></div>';
+            
+            // Show modal
+            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editModal.show();
+            
+            // Reset password fields
+            const resetPasswordCheckbox = document.getElementById('edit-reset-password');
+            if (resetPasswordCheckbox) {
+                resetPasswordCheckbox.checked = false;
+            }
+            
+            const passwordContainer = document.getElementById('edit-password-container');
+            if (passwordContainer) {
+                passwordContainer.style.display = 'none';
+            }
+            
+            // Fetch student data
+            fetch(`../../controllers/admin/get_student.php?id=${studentId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.message);
+                    }
+                    
+                    // Restore edit form
+                    document.querySelector('#editModal .modal-body').innerHTML = editFormOriginal;
+                    
+                    // Update form with student data
+                    setFormValue('edit-id', data.id);
+                    setFormValue('edit-student-id', data.student_id);
+                    setFormValue('edit-username', data.username);
+                    setFormValue('edit-full-name', data.full_name);
+                    setFormValue('edit-email', data.email);
+                    setFormValue('edit-dob', data.date_of_birth ? data.date_of_birth.split(' ')[0] : '');
+                    
+                    const genderSelect = document.getElementById('edit-gender');
+                    if (genderSelect) {
+                        genderSelect.value = data.gender;
+                    }
+                    
+                    setFormValue('edit-class', data.class);
+                    setFormValue('edit-department', data.department);
+                    setFormValue('edit-entry-year', data.entry_year);
+                    setFormValue('edit-phone', data.phone);
+                    
+                    const statusSelect = document.getElementById('edit-status');
+                    if (statusSelect) {
+                        statusSelect.value = data.status;
+                    }
+                    
+                    setFormValue('edit-address', data.address);
+                    
+                    // Reset error message
+                    const errorMessage = document.getElementById('edit-error-message');
+                    if (errorMessage) {
+                        errorMessage.style.display = 'none';
+                    }
+                    
+                    // Setup event listener for reset password checkbox
+                    const resetPasswordCheckbox = document.getElementById('edit-reset-password');
+                    if (resetPasswordCheckbox) {
+                        resetPasswordCheckbox.addEventListener('change', function() {
+                            const passwordContainer = document.getElementById('edit-password-container');
+                            if (passwordContainer) {
+                                passwordContainer.style.display = this.checked ? 'block' : 'none';
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching student:', error);
+                    document.querySelector('#editModal .modal-body').innerHTML = `<div class="alert alert-danger">Không thể tải thông tin sinh viên: ${error.message}</div>`;
+                });
+        }
+
+        // Update student
+        function updateStudent() {
+            // Get form data
+            const form = document.getElementById('editStudentForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Add reset password flag
+            data.reset_password = document.getElementById('edit-reset-password').checked;
+            
+            // If reset password is not checked, remove password field
+            if (!data.reset_password) {
+                delete data.password;
+            }
+            
+            // Show loading on button
+            const updateBtn = document.getElementById('updateStudentBtn');
+            const originalBtnText = updateBtn.innerHTML;
+            updateBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang cập nhật...';
+            updateBtn.disabled = true;
+            
+            // Hide error message
+            document.getElementById('edit-error-message').style.display = 'none';
+            
+            // Send data to server
+            fetch('../../controllers/admin/update_student.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button
+                    updateBtn.innerHTML = originalBtnText;
+                    updateBtn.disabled = false;
+                    
+                    if (data.error) {
+                        // Show error message
+                        const errorEl = document.getElementById('edit-error-message');
+                        errorEl.textContent = data.message || 'Có lỗi xảy ra khi cập nhật sinh viên.';
+                        errorEl.style.display = 'block';
+                    } else {
+                        // Close modal and reload students
+                        bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                        
+                        // Show success message
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = `
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                Đã cập nhật thông tin sinh viên thành công.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        
+                        // Reload students
+                        loadStudents();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating student:', error);
+                    
+                    // Reset button
+                    updateBtn.innerHTML = originalBtnText;
+                    updateBtn.disabled = false;
+                    
+                    // Show error message
+                    const errorEl = document.getElementById('edit-error-message');
+                    errorEl.textContent = 'Lỗi kết nối: ' + error.message;
+                    errorEl.style.display = 'block';
+                });
+        }
+
+        // Confirm delete student
+        function confirmDelete(studentId, studentName) {
+            document.getElementById('delete-student-id').value = studentId;
+            document.getElementById('delete-student-name').textContent = studentName;
+            
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            deleteModal.show();
+        }
+
+        // Delete student
+        function deleteStudent() {
+            const studentId = document.getElementById('delete-student-id').value;
+            
+            // Show loading on button
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            const originalBtnText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xóa...';
+            deleteBtn.disabled = true;
+            
+            // Send delete request
+            fetch('../../controllers/admin/delete_student.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: studentId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP error ${response.status}: ${text}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(text => {
+                // Try to parse the response as JSON
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error("Failed to parse server response as JSON:", text);
+                    throw new Error(`Server returned invalid JSON: ${text.substring(0, 100)}...`);
+                }
+                return data;
+            })
+            .then(data => {
+                // Reset button
+                deleteBtn.innerHTML = originalBtnText;
+                deleteBtn.disabled = false;
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                
+                if (data.error) {
+                    // Show error message
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${data.message || 'Có lỗi xảy ra khi xóa sinh viên.'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                } else {
+                    // Show success message
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            Đã xóa sinh viên ${data.full_name || ''} (${data.student_id || ''}) thành công.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `;
+                    
+                    // Reload students
+                    loadStudents();
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting student:', error);
+                
+                // Reset button
+                deleteBtn.innerHTML = originalBtnText;
+                deleteBtn.disabled = false;
+                
+                // Close modal
+                bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                
+                // Show error message
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Lỗi khi xóa sinh viên: ${error.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            });
         }
     </script>
 </body>

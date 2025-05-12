@@ -55,21 +55,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $token = bin2hex(random_bytes(32));
                     $expires = time() + (30 * 24 * 60 * 60); // 30 days
                     
-                    // Store token in database
-                    execute(
-                        "UPDATE users SET remember_token = ? WHERE id = ?",
-                        [$token, $user['id']]
-                    );
+                    // Store token in database - skipping this part since remember_token column doesn't exist
+                    // execute(
+                    //     "UPDATE users SET remember_token = ? WHERE id = ?",
+                    //     [$token, $user['id']]
+                    // );
                     
-                    // Set cookie
+                    // Just set cookie without database storage
                     setcookie('remember_token', $token, $expires, '/', '', false, true);
                 }
                 
                 // Redirect based on user role
                 if ($user['role'] === 'admin') {
-                    header('Location: ../../views/admin/dashboard.php');
+                    header('Location: ../../views/admin/dashboard.html');
                 } else {
-                    header('Location: ../../views/student/dashboard.php');
+                    header('Location: ../../views/student/dashboard.html');
                 }
                 exit;
             } else {
@@ -80,15 +80,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // If there are errors, redirect back to login with errors
     if (!empty($errors)) {
-        $_SESSION['login_errors'] = $errors;
-        $_SESSION['login_username'] = $username;
-        $_SESSION['login_user_type'] = $userType;
+        // URL encode errors for passing through URL parameters
+        $errorsJson = urlencode(json_encode($errors));
         
-        header('Location: ../../views/public/login.php');
+        // Redirect with error parameters
+        header("Location: ../../views/public/login.html?errors={$errorsJson}&username=" . urlencode($username) . "&user_type=" . urlencode($userType));
         exit;
     }
 } else {
     // If not a POST request, redirect to login page
-    header('Location: ../../views/public/login.php');
+    header('Location: ../../views/public/login.html');
     exit;
 } 

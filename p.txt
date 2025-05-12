@@ -1,4 +1,15 @@
+Tôi cần xây dựng một Hệ thống Quản lý Sinh viên cơ bản dưới dạng ứng dụng web. Hệ thống này sẽ cho phép quản lý thông tin sinh viên là chính, các hoạt động học tập khác.
+Yêu Cầu Kỹ Thuật
 
+Ngôn ngữ và công nghệ: HTML5, PHP (vanilla - không sử dụng framework), MySQL, CSS (Bootstrap) và JavaScript
+Cấu trúc: PHP xử lý backend thông qua form action, tách biệt với HTML
+Cơ sở dữ liệu: MySQL với tối đa 5 bảng có mối quan hệ rõ ràng:
+
+users (chứa cả sinh viên và admin, phân loại bằng role)
+courses (thông tin về các khóa học)
+grades (điểm số của sinh viên)
+semesters (thông tin về học kỳ)
+internships (thông tin thực tập)
 
 Chức Năng Chính (CRUD)
 
@@ -24,12 +35,12 @@ Quản lý bảng điểm:
 Xem bảng điểm theo sinh viên
 Xem bảng điểm theo môn học
 Xuất bảng điểm ra các định dạng phổ biến (PDF, Excel)
+Nhập, Xuất thông tin sinh viên từ/đến excel
 
 Phân tích học tập:
 Tính điểm trung bình học kỳ
 Tính điểm trung bình toàn khóa (GPA)
 Xếp loại học lực tự động (Xuất sắc, Giỏi, Khá, Trung bình, Yếu)
-
 
 Tìm kiếm thông minh, lọc:
 Tìm kiếm sinh viên theo nhiều tiêu chí (tên, mã số, lớp, khoa, etc.)
@@ -40,7 +51,6 @@ Hệ thống thông báo qua email. Gửi cảnh báo học vụ tự động
 Gửi email thông báo khi sinh viên có điểm trung bình dưới 5
 Gửi email thông báo khi sinh viên có nhiều môn bị điểm dưới 4
 Gửi chúc mừng sinh nhật tự động cho sinh viên
-
 
 Trang chủ công khai:
 
@@ -99,5 +109,9 @@ StudentManagementSystem/
 │   └── student/          # Student view files
 └── index.php             # Call index.html if not login else admin/student dashboard
 
+Xin hãy cung cấp giải pháp hoàn chỉnh với các file cần thiết và cấu trúc cơ sở dữ liệu phù hợp. Tôi đặc biệt quan tâm đến việc bảo đảm hiệu năng tốt và hệ thống dễ bảo trì, mở rộng trong tương lai.  Phần gửi email cho học sinh thì dùng PHPMailer gửi đến email học sinh ở database, ví dụ sử dụng ở send_mail_demo.php
+ Sử dụng tối đa 5 bảng mysql, các dữ liệu insert trong bảng mysql dùng tiếng Việt, còn tên bảng và các colume vẫn dùng tiếng Anh. Tôi cần kiến trúc phân tách rõ ràng giữa giao diện người dùng (HTML) và xử lý logic (PHP) thông qua mô hình:
 
-Xin hãy cung cấp giải pháp hoàn chỉnh với các file cần thiết và cấu trúc cơ sở dữ liệu phù hợp. Tôi đặc biệt quan tâm đến việc bảo đảm hiệu năng tốt và hệ thống dễ bảo trì, mở rộng trong tương lai.
+File HTML riêng biệt với form có thuộc tính action trỏ đến file PHP
+File PHP riêng biệt để xử lý logic và dữ liệu ví dụ như index.html có from đăng nhập và xử lý đăng nhập bởi login.php
+use context7.

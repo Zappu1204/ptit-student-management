@@ -16,6 +16,9 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
 </head>
 <body>
     <!-- Hero Section -->
@@ -26,7 +29,7 @@
                     <h1 class="mb-3">Hệ thống Quản lý Sinh viên PTIT</h1>
                     <p class="mb-4">Hỗ trợ quản lý thông tin sinh viên, môn học, điểm số và tạo báo cáo tổng hợp.</p>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                        <a href="login.php" class="btn btn-outline-light btn-lg px-4 me-md-2">
+                        <a href="login.html" class="btn btn-outline-light btn-lg px-4 me-md-2">
                             <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập
                         </a>
                     </div>
@@ -55,6 +58,7 @@
         </div>
         
         <div class="row">
+            <h2 class="text-center mb-4">Chức năng của hệ thống</h2>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center py-4">
@@ -113,7 +117,7 @@
                         </ul>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="login.php?user_type=student" class="btn btn-danger">
+                        <a href="login.html?user_type=student" class="btn btn-danger">
                             <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập Sinh viên
                         </a>
                     </div>
@@ -142,7 +146,7 @@
                         </ul>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="login.php?user_type=admin" class="btn btn-danger">
+                        <a href="login.html?user_type=admin" class="btn btn-danger">
                             <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập Quản trị viên
                         </a>
                     </div>
@@ -151,45 +155,14 @@
         </div>
     </div>
 
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Hệ thống Quản lý Sinh viên PTIT</h5>
-                    <p>Công cụ quản lý thông tin sinh viên, điểm số và hoạt động học tập hiệu quả.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="login.php" class="text-white">Đăng nhập</a></li>
-                        <li><a href="https://portal.ptit.edu.vn/" class="text-white" target="_blank">Portal PTIT</a></li>
-                        <li><a href="https://www.ptit.edu.vn/" class="text-white" target="_blank">Website PTIT</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liên hệ</h5>
-                    <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> Học viện Công nghệ Bưu chính Viễn thông</p>
-                        <p><i class="fas fa-phone me-2"></i> (024) 3854 5604</p>
-                        <p><i class="fas fa-envelope me-2"></i> info@ptit.edu.vn</p>
-                    </address>
-                </div>
-            </div>
-            <hr>
-            <div class="text-center">
-                <p class="mb-0">&copy; <span class="current-year"></span> - Hệ thống Quản lý Sinh viên PTIT</p>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
     
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <!-- Custom Scripts -->
-    <script src="../../assets/js/script.js"></script>
     
     <script>
         // Fetch top students
@@ -237,9 +210,6 @@
                     console.error('Error fetching top students:', error);
                     document.getElementById('top-students-container').innerHTML = '<div class="col-12 text-center"><p class="text-danger">Không thể tải dữ liệu. Vui lòng thử lại sau.</p></div>';
                 });
-                
-            // Set current year in footer
-            document.querySelector('.current-year').textContent = new Date().getFullYear();
         });
     </script>
 </body>

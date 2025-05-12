@@ -46,7 +46,7 @@ function render($view, $data = []) {
  * @param string $url The URL to redirect to
  * @return void
  */
-function redirect($url) {
+function redirectTo($url) {
     header('Location: ' . $url);
     exit;
 }
@@ -58,7 +58,7 @@ function redirect($url) {
  * @param string $message The message text
  * @return void
  */
-function setFlashMessage($type, $message) {
+function setViewFlashMessage($type, $message) {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -74,7 +74,7 @@ function setFlashMessage($type, $message) {
  * 
  * @return string HTML for the flash messages
  */
-function displayFlashMessages() {
+function displayViewFlashMessages() {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }

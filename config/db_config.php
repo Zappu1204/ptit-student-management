@@ -209,3 +209,33 @@ function escapeString($value) {
     $conn = getDbConnection();
     return $conn->real_escape_string($value);
 }
+
+/**
+ * Begin a database transaction
+ * 
+ * @return bool Returns true on success or false on failure
+ */
+function beginTransaction() {
+    $conn = getDbConnection();
+    return $conn->begin_transaction();
+}
+
+/**
+ * Commit a database transaction
+ * 
+ * @return bool Returns true on success or false on failure
+ */
+function commitTransaction() {
+    $conn = getDbConnection();
+    return $conn->commit();
+}
+
+/**
+ * Rollback a database transaction
+ * 
+ * @return bool Returns true on success or false on failure
+ */
+function rollbackTransaction() {
+    $conn = getDbConnection();
+    return $conn->rollback();
+}

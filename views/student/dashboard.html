@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard - PTIT Student Management System</title>
+    <title>Bảng điều khiển - PTIT Student Management System</title>
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,295 +14,324 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.2rem;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+        .sidebar .nav-link.active {
+            font-weight: 500;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            border: none;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+    </style>
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
 </head>
 <body>
-    <!-- Header -->
-    <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-2">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
-                <i class="fas fa-graduation-cap me-2"></i>
-                <span>PTIT Student Management</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <span class="nav-link">
-                            <i class="fas fa-user me-1"></i> <span id="studentName">Student Name</span>
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../../controllers/public/logout_process.php">
-                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    <div class="container-fluid py-4">
+    <!-- Header Section (loaded dynamically) -->
+    <div id="header"></div>
+    
+    <div class="container-fluid">
         <div class="row">
-            <!-- Student sidebar -->
-            <div class="col-md-3 col-lg-2">
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="list-group list-group-flush">
-                        <a href="dashboard.html" class="list-group-item list-group-item-action active">
-                            <i class="fas fa-tachometer-alt me-2"></i> Trang chủ
-                        </a>
-                        <a href="profile.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-user me-2"></i> Thông tin cá nhân
-                        </a>
-                        <a href="grades.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-chart-bar me-2"></i> Bảng điểm
-                        </a>
-                        <a href="subjects.html" class="list-group-item list-group-item-action">
-                            <i class="fas fa-book me-2"></i> Môn học
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!-- Sidebar Section (loaded dynamically) -->
+            <div id="student-sidebar" class="col-lg-3 col-xl-2 px-0 bg-light sidebar"></div>
             
-            <!-- Main content -->
-            <div class="col-md-9 col-lg-10">
-                <div class="student-profile-header rounded">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col-md-2 text-center mb-3 mb-md-0">
-                                <div class="rounded-circle bg-white text-danger d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; font-size: 2.5rem;">
-                                    <i class="fas fa-user-graduate"></i>
-                                </div>
-                            </div>
-                            <div class="col-md-10">
-                                <h2 id="profileName">Student Full Name</h2>
-                                <p class="mb-0"><strong>MSSV:</strong> <span id="profileId">B20DCCN123</span></p>
-                                <p class="mb-0"><strong>Lớp:</strong> <span id="profileClass">D20CQCN01-B</span></p>
-                                <p class="mb-0"><strong>Điểm trung bình tích lũy:</strong> <span class="badge bg-light text-dark" id="profileGPA">3.5</span></p>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Main Content -->
+            <div class="col-lg-9 col-xl-10 main-content">
+                <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+                    <strong>Xin chào!</strong> Chào mừng bạn quay trở lại với hệ thống quản lý sinh viên.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 
-                <!-- Quick info cards -->
                 <div class="row mb-4">
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="display-4 text-danger mb-2">
-                                    <i class="fas fa-graduation-cap"></i>
-                                </div>
-                                <h5 class="card-title">Điểm trung bình</h5>
-                                <p class="card-text display-6 fw-bold" id="gpaCard">3.50</p>
-                                <a href="grades.html" class="btn btn-sm btn-outline-danger">Xem chi tiết</a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="display-4 text-success mb-2">
+                    <div class="col-md-6 col-xl-3 mb-4">
+                        <div class="card stat-card h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="stat-icon bg-primary text-white me-3">
                                     <i class="fas fa-book"></i>
                                 </div>
-                                <h5 class="card-title">Môn học đã học</h5>
-                                <p class="card-text display-6 fw-bold" id="coursesCount">12</p>
-                                <a href="subjects.html" class="btn btn-sm btn-outline-success">Xem chi tiết</a>
+                                <div>
+                                    <h6 class="text-muted mb-1">Môn học đã học</h6>
+                                    <h3 class="mb-0" id="course-count">--</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="col-md-4 mb-4">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="card-body text-center">
-                                <div class="display-4 text-primary mb-2">
-                                    <i class="fas fa-calendar-check"></i>
+                    <div class="col-md-6 col-xl-3 mb-4">
+                        <div class="card stat-card h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="stat-icon bg-success text-white me-3">
+                                    <i class="fas fa-medal"></i>
                                 </div>
-                                <h5 class="card-title">Học kỳ hiện tại</h5>
-                                <p class="card-text display-6 fw-bold">2024-2</p>
-                                <a href="schedule.html" class="btn btn-sm btn-outline-primary">Xem lịch học</a>
+                                <div>
+                                    <h6 class="text-muted mb-1">Điểm GPA</h6>
+                                    <h3 class="mb-0" id="gpa">--</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-xl-3 mb-4">
+                        <div class="card stat-card h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="stat-icon bg-info text-white me-3">
+                                    <i class="fas fa-certificate"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Tổng tín chỉ</h6>
+                                    <h3 class="mb-0" id="total-credits">--</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 col-xl-3 mb-4">
+                        <div class="card stat-card h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="stat-icon bg-warning text-white me-3">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h6 class="text-muted mb-1">Học kỳ hiện tại</h6>
+                                    <h3 class="mb-0" id="current-semester">--</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Recent Grades -->
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-white">
-                        <h5 class="mb-0">Điểm số gần đây</h5>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Mã môn</th>
-                                        <th>Tên môn học</th>
-                                        <th>Tín chỉ</th>
-                                        <th>Điểm</th>
-                                        <th>Học kỳ</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recentGradesTable">
-                                    <tr>
-                                        <td colspan="5" class="text-center">Đang tải dữ liệu...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Điểm số môn học</h5>
+                                <a href="grades.html" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="gradesChart" height="250"></canvas>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white text-end">
-                        <a href="grades.html" class="btn btn-sm btn-outline-primary">Xem tất cả điểm</a>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Thông tin sinh viên</h5>
+                                <a href="profile.html" class="btn btn-sm btn-outline-primary">Cập nhật</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="avatar me-3">
+                                        <img src="../../assets/images/avatar-placeholder.jpg" id="student-avatar" alt="Avatar" class="rounded-circle" width="80" height="80" onerror="this.src='../../assets/images/avatar-placeholder.jpg';">
+                                    </div>
+                                    <div>
+                                        <h5 id="student-full-name">Tải dữ liệu...</h5>
+                                        <p class="text-muted mb-0" id="student-id">Tải dữ liệu...</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <p class="mb-1"><strong>Email:</strong> <span id="student-email">Tải dữ liệu...</span></p>
+                                    <p class="mb-1"><strong>Lớp:</strong> <span id="student-class">Tải dữ liệu...</span></p>
+                                    <p class="mb-1"><strong>Khoa:</strong> <span id="student-department">Tải dữ liệu...</span></p>
+                                    <p class="mb-1"><strong>Học lực:</strong> <span id="student-standing">Tải dữ liệu...</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Lịch học gần nhất</h5>
+                                <a href="schedule.html" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush" id="upcoming-classes">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Cơ sở dữ liệu</h6>
+                                            <small>Hôm nay, 14:00 - 17:00</small>
+                                        </div>
+                                        <p class="mb-1">Phòng B502, Tòa nhà B</p>
+                                        <small>TS. Phạm Thị D</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Lập trình hướng đối tượng</h6>
+                                            <small>Ngày mai, 07:30 - 11:30</small>
+                                        </div>
+                                        <p class="mb-1">Phòng A305, Tòa nhà A</p>
+                                        <small>TS. Võ Văn E</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Toán rời rạc</h6>
+                                            <small>Thứ 4, 14:00 - 17:00</small>
+                                        </div>
+                                        <p class="mb-1">Phòng C101, Tòa nhà C</p>
+                                        <small>TS. Lê Văn C</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Thông báo mới</h5>
+                                <a href="messages.html" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="list-group list-group-flush">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Lịch thi cuối kỳ</h6>
+                                            <small class="text-muted">3 ngày trước</small>
+                                        </div>
+                                        <p class="mb-1">Lịch thi cuối kỳ đã được công bố, vui lòng kiểm tra.</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Đăng ký môn học học kỳ mới</h6>
+                                            <small class="text-muted">1 tuần trước</small>
+                                        </div>
+                                        <p class="mb-1">Hệ thống đăng ký môn học học kỳ II sẽ mở từ ngày 15/01/2024.</p>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Thông báo học bổng</h6>
+                                            <small class="text-muted">2 tuần trước</small>
+                                        </div>
+                                        <p class="mb-1">Chương trình học bổng cho sinh viên xuất sắc học kỳ I năm học 2023-2024.</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>PTIT Student Management System</h5>
-                    <p>Hệ thống quản lý sinh viên hiện đại, tiện lợi và dễ sử dụng.</p>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liên kết</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="../../controllers/public/logout_process.php" class="text-white">Đăng xuất</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Liên hệ</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-map-marker-alt me-2"></i> Hà Nội, Việt Nam</li>
-                        <li><i class="fas fa-envelope me-2"></i> info@ptit.edu.vn</li>
-                        <li><i class="fas fa-phone me-2"></i> (84) 123 456 789</li>
-                    </ul>
-                </div>
-            </div>
-            <hr>
-            <div class="text-center">
-                <p class="mb-0">© 2025 PTIT Student Management System. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
     
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
     
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <!-- Custom Script -->
+    
     <script>
-        $(document).ready(function() {
-            // Check if user is authenticated and is a student
-            checkAuth();
-            
-            // Load student data
-            loadStudentData();
-            
-            // Load recent grades
-            loadRecentGrades();
-        });
-        
-        function checkAuth() {
-            $.ajax({
-                url: '../../controllers/student/check_auth.php',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status !== 'success') {
-                        window.location.href = '../../views/public/login.php';
+        document.addEventListener('DOMContentLoaded', function() {
+            // Fetch student data from API
+            fetch('../../controllers/student/get_student_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching student data:', data.message);
+                        return;
                     }
-                },
-                error: function() {
-                    window.location.href = '../../views/public/login.php';
-                }
-            });
-        }
-        
-        function loadStudentData() {
-            $.ajax({
-                url: '../../controllers/student/get_student_data.php',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    if (data.status === 'success') {
-                        // Update student info in the UI
-                        $('#studentName').text(data.student.full_name);
-                        $('#profileName').text(data.student.full_name);
-                        $('#profileId').text(data.student.student_id);
-                        $('#profileClass').text(data.student.class);
-                        $('#profileGPA').text(data.gpa);
-                        $('#gpaCard').text(data.gpa);
-                        $('#coursesCount').text(data.courses_count);
-                    } else {
-                        console.error('Error loading student data:', data.message);
+                    
+                    // Update student info
+                    document.getElementById('student-full-name').textContent = data.full_name;
+                    document.getElementById('student-id').textContent = data.student_id;
+                    document.getElementById('student-email').textContent = data.email;
+                    document.getElementById('student-class').textContent = data.class || 'N/A';
+                    document.getElementById('student-department').textContent = data.department || 'N/A';
+                    document.getElementById('student-standing').textContent = data.academic_standing || 'N/A';
+                    
+                    // Update dashboard stats
+                    document.getElementById('course-count').textContent = data.course_count || '0';
+                    document.getElementById('gpa').textContent = parseFloat(data.gpa).toFixed(2) || '0.00';
+                    document.getElementById('total-credits').textContent = data.total_credits || '0';
+                    document.getElementById('current-semester').textContent = data.current_semester || 'N/A';
+                    
+                    // Update avatar if available
+                    if (data.avatar) {
+                        document.getElementById('student-avatar').src = data.avatar;
                     }
-                },
-                error: function() {
-                    console.error('Failed to load student data');
-                }
-            });
-        }
-        
-        function loadRecentGrades() {
-            $.ajax({
-                url: '../../controllers/student/get_recent_grades.php',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    if (data.status === 'success') {
-                        renderRecentGrades(data.grades);
-                    } else {
-                        $('#recentGradesTable').html('<tr><td colspan="5" class="text-center">' + data.message + '</td></tr>');
-                    }
-                },
-                error: function() {
-                    $('#recentGradesTable').html('<tr><td colspan="5" class="text-center">Không thể tải dữ liệu. Vui lòng thử lại sau.</td></tr>');
-                }
-            });
-        }
-        
-        function renderRecentGrades(grades) {
-            if (grades && grades.length > 0) {
-                let html = '';
-                
-                grades.forEach(function(grade) {
-                    html += '<tr>';
-                    html += '<td>' + grade.subject_id + '</td>';
-                    html += '<td>' + grade.subject_name + '</td>';
-                    html += '<td>' + grade.credit + '</td>';
-                    html += '<td>' + formatGrade(grade.grade) + '</td>';
-                    html += '<td>' + grade.semester_name + ' ' + grade.semester_year + '</td>';
-                    html += '</tr>';
+                    
+                    // Create grades chart
+                    const gradesData = {
+                        labels: data.recent_courses.map(course => course.name),
+                        datasets: [{
+                            label: 'Điểm số',
+                            data: data.recent_courses.map(course => course.score),
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+                    
+                    const ctx = document.getElementById('gradesChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: gradesData,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 10
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
-                
-                $('#recentGradesTable').html(html);
-            } else {
-                $('#recentGradesTable').html('<tr><td colspan="5" class="text-center">Chưa có dữ liệu điểm số.</td></tr>');
-            }
-        }
-        
-        function formatGrade(grade) {
-            // Format the grade with appropriate styling
-            if (grade >= 8.5) {
-                return '<span class="text-success fw-bold">' + grade.toFixed(1) + '</span>';
-            } else if (grade >= 7.0) {
-                return '<span class="text-primary fw-bold">' + grade.toFixed(1) + '</span>';
-            } else if (grade >= 5.0) {
-                return '<span class="text-warning fw-bold">' + grade.toFixed(1) + '</span>';
-            } else {
-                return '<span class="text-danger fw-bold">' + grade.toFixed(1) + '</span>';
-            }
-        }
+        });
     </script>
 </body>
 </html>
+

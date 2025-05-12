@@ -1,0 +1,2 @@
+# This file ensures the uploads directory is created
+# Uploads will be stored in this directory but not tracked by git 

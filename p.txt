@@ -1,0 +1,103 @@
+
+
+Chức Năng Chính (CRUD)
+
+Xem (Read):
+Hiển thị danh sách sinh viên với các thông tin cơ bản
+
+Thêm (Create):
+Thêm sinh viên mới vào hệ thống
+
+Sửa (Update):
+Cập nhật thông tin sinh viên
+
+Xóa (Delete):
+Xóa sinh viên khỏi hệ thống
+
+Tính Năng Mở Rộng (Backend)
+- Xem chi tiết thông tin từng sinh viên, thêm, cập nhật, sửa, xóa
+Quản lý môn học:
+
+Thêm, sửa, xóa môn học
+
+Quản lý bảng điểm:
+Xem bảng điểm theo sinh viên
+Xem bảng điểm theo môn học
+Xuất bảng điểm ra các định dạng phổ biến (PDF, Excel)
+
+Phân tích học tập:
+Tính điểm trung bình học kỳ
+Tính điểm trung bình toàn khóa (GPA)
+Xếp loại học lực tự động (Xuất sắc, Giỏi, Khá, Trung bình, Yếu)
+
+
+Tìm kiếm thông minh, lọc:
+Tìm kiếm sinh viên theo nhiều tiêu chí (tên, mã số, lớp, khoa, etc.)
+Lọc sinh viên theo học lực, điểm số
+Sắp xếp kết quả theo nhiều tiêu chí
+
+Hệ thống thông báo qua email. Gửi cảnh báo học vụ tự động
+Gửi email thông báo khi sinh viên có điểm trung bình dưới 5
+Gửi email thông báo khi sinh viên có nhiều môn bị điểm dưới 4
+Gửi chúc mừng sinh nhật tự động cho sinh viên
+
+
+Trang chủ công khai:
+
+Hiển thị 3 sinh viên xuất sắc nhất trước khi đăng nhập
+Hiển thị thông tin giới thiệu về trường/khoa
+Form đăng nhập dành cho admin và sinh viên
+
+
+Quản lý thực tập:
+
+Sinh viên đặt nguyện vọng thực tập
+Hệ thống sàng lọc theo điểm GPA và thứ tự nguyện vọng (tương tự bài toán tuyển sinh đại học)
+Phân công sinh viên vào các công ty thực tập
+
+Yêu Cầu Giao Diện
+
+Responsive design sử dụng Bootstrap
+Giao diện thân thiện với người dùng, dễ sử dụng
+Hiển thị thông tin rõ ràng, có phân trang cho dữ liệu lớn
+Bảng điều khiển admin và sinh viên riêng biệt
+
+Bảo Mật
+
+Đăng nhập an toàn với phân quyền rõ ràng (admin và sinh viên), thông tin admin sẽ lưu ở biến môi trường, không triển khai chi tiết trong code
+Mã hóa mật khẩu
+Bảo vệ khỏi các lỗ hổng phổ biến (SQL injection, XSS)
+Quản lý phiên làm việc
+
+Kết Quả Mong Muốn
+1. Các thành phần UI chủ yếu nằm trong các tệp HTML với PHP tối thiểu cho nội dung động cần thiết
+2. Biểu mẫu HTML có thuộc tính action="[file].php" thích hợp gửi đến các tệp xử lý PHP chuyên dụng
+3. Phân tách rõ ràng giữa logic trình bày và logic nghiệp vụ
+4. Các tệp PHP tập trung vào xử lý dữ liệu, hoạt động cơ sở dữ liệu và logic nghiệp vụ
+Mã nguồn đầy đủ, có thể triển khai ngay (file HTML, PHP, CSS, JS)
+Các thông tin cần bảo mật sẽ lưu dưới file .env và được load vào code php
+Cơ sở dữ liệu MySQL với cấu trúc rõ ràng và các mối quan hệ được thiết lập
+Tài liệu hướng dẫn triển khai và sử dụng hệ thống
+
+Cấu trúc minh họa:
+StudentManagementSystem/
+├── assets/                # Static assets (CSS, JS, images)
+├── config/               # Configuration files
+│   ├── auth.php          # Authentication functions
+│   ├── db_config.php     # Database configuration
+│   ├── functions.php     # Helper functions
+│   └── view_helper.php   # View rendering functions
+├── controllers/          # PHP processing scripts
+│   ├── admin/            # Admin controllers
+│   ├── public/           # Public controllers (login, logout, etc.)
+│   └── student/          # Student controllers
+├── includes/             # Legacy includes (to be deprecated)
+├── views/                # HTML view files
+│   ├── admin/            # Admin view files
+│   ├── includes/         # Shared view components
+│   ├── public/           # Public view files
+│   └── student/          # Student view files
+└── index.php             # Call index.html if not login else admin/student dashboard
+
+
+Xin hãy cung cấp giải pháp hoàn chỉnh với các file cần thiết và cấu trúc cơ sở dữ liệu phù hợp. Tôi đặc biệt quan tâm đến việc bảo đảm hiệu năng tốt và hệ thống dễ bảo trì, mở rộng trong tương lai.

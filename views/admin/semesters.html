@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quản lý Học kỳ</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sidebar placeholder -->
+            <div id="sidebar-container" class="col-md-3 col-lg-2"></div>
+            
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h2">Quản lý Học kỳ</h1>
+                    <button id="btnAddSemester" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm Học kỳ mới
+                    </button>
+                </div>
+                
+                <!-- Alert messages -->
+                <div id="alertMessage" class="alert d-none"></div>
+                
+                <!-- Semesters table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên học kỳ</th>
+                                        <th>Năm học</th>
+                                        <th>Ngày bắt đầu</th>
+                                        <th>Ngày kết thúc</th>
+                                        <th class="text-center">Tác vụ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="semestersTableBody">
+                                    <!-- Table data will be loaded here via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Semester Modal -->
+    <div class="modal fade" id="addSemesterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm Học kỳ mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSemesterForm">
+                        <div class="mb-3">
+                            <label for="semester_name" class="form-label">Tên học kỳ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="semester_name" name="semester_name" required>
+                            <div class="form-text">Ví dụ: Học kỳ 1, Học kỳ 2, Học kỳ Hè</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Năm học <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="year" name="year" min="2000" max="2100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnSaveSemester" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Semester Modal -->
+    <div class="modal fade" id="editSemesterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa Học kỳ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSemesterForm">
+                        <input type="hidden" id="edit_semester_id" name="semester_id">
+                        <div class="mb-3">
+                            <label for="edit_semester_name" class="form-label">Tên học kỳ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edit_semester_name" name="semester_name" required>
+                            <div class="form-text">Ví dụ: Học kỳ 1, Học kỳ 2, Học kỳ Hè</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_year" class="form-label">Năm học <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_year" name="year" min="2000" max="2100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_start_date" class="form-label">Ngày bắt đầu <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="edit_start_date" name="start_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_end_date" class="form-label">Ngày kết thúc <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="edit_end_date" name="end_date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnUpdateSemester" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteSemesterModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa học kỳ này?</p>
+                    <p id="deleteSemesterInfo"></p>
+                    <input type="hidden" id="delete_semester_id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnConfirmDelete" class="btn btn-danger">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom scripts -->
+    <script>
+        // Document ready
+        $(document).ready(function() {
+            // Load sidebar
+            $('#sidebar-container').load('../../views/includes/admin_sidebar.php', function() {
+                // Highlight active menu item
+                $('#menu-semesters').addClass('active');
+            });
+            
+            // Check authentication
+            checkAuth();
+            
+            // Initial data load
+            loadSemesters();
+            
+            // Set current year as default in add form
+            $('#year').val(new Date().getFullYear());
+            
+            // Add semester modal show
+            $('#btnAddSemester').click(function() {
+                $('#addSemesterForm')[0].reset();
+                $('#year').val(new Date().getFullYear());
+                $('#addSemesterModal').modal('show');
+            });
+            
+            // Save new semester
+            $('#btnSaveSemester').click(function() {
+                const form = $('#addSemesterForm');
+                
+                // Form validation
+                if (!form[0].checkValidity()) {
+                    form.find(':input').addClass('is-invalid');
+                    return;
+                }
+                
+                // Get form data
+                const formData = {
+                    semester_name: $('#semester_name').val().trim(),
+                    year: $('#year').val(),
+                    start_date: $('#start_date').val(),
+                    end_date: $('#end_date').val()
+                };
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/semester_add_process.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Close modal
+                            $('#addSemesterModal').modal('hide');
+                            
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload semesters
+                            loadSemesters();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message, 'addSemesterModal');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error, 'addSemesterModal');
+                    }
+                });
+            });
+            
+            // Open edit modal
+            $(document).on('click', '.btn-edit', function() {
+                const semesterId = $(this).data('id');
+                
+                // Get semester details
+                $.ajax({
+                    url: '../../controllers/admin/get_semester.php',
+                    type: 'GET',
+                    data: { id: semesterId },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const semester = response.semester;
+                            
+                            // Fill form
+                            $('#edit_semester_id').val(semester.semester_id);
+                            $('#edit_semester_name').val(semester.semester_name);
+                            $('#edit_year').val(semester.year);
+                            $('#edit_start_date').val(semester.start_date);
+                            $('#edit_end_date').val(semester.end_date);
+                            
+                            // Show modal
+                            $('#editSemesterModal').modal('show');
+                        } else {
+                            showAlert('danger', response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error);
+                    }
+                });
+            });
+            
+            // Update semester
+            $('#btnUpdateSemester').click(function() {
+                const form = $('#editSemesterForm');
+                
+                // Form validation
+                if (!form[0].checkValidity()) {
+                    form.find(':input').addClass('is-invalid');
+                    return;
+                }
+                
+                // Get form data
+                const formData = {
+                    semester_id: $('#edit_semester_id').val(),
+                    semester_name: $('#edit_semester_name').val().trim(),
+                    year: $('#edit_year').val(),
+                    start_date: $('#edit_start_date').val(),
+                    end_date: $('#edit_end_date').val()
+                };
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/semester_edit_process.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Close modal
+                            $('#editSemesterModal').modal('hide');
+                            
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload semesters
+                            loadSemesters();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message, 'editSemesterModal');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error, 'editSemesterModal');
+                    }
+                });
+            });
+            
+            // Open delete confirmation modal
+            $(document).on('click', '.btn-delete', function() {
+                const semesterId = $(this).data('id');
+                const semesterName = $(this).data('name');
+                const year = $(this).data('year');
+                
+                $('#delete_semester_id').val(semesterId);
+                $('#deleteSemesterInfo').text(`${semesterName} - ${year}`);
+                $('#deleteSemesterModal').modal('show');
+            });
+            
+            // Confirm delete
+            $('#btnConfirmDelete').click(function() {
+                const semesterId = $('#delete_semester_id').val();
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/semester_delete_process.php',
+                    type: 'POST',
+                    data: { semester_id: semesterId },
+                    dataType: 'json',
+                    success: function(response) {
+                        // Close modal
+                        $('#deleteSemesterModal').modal('hide');
+                        
+                        if (response.status === 'success') {
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload semesters
+                            loadSemesters();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#deleteSemesterModal').modal('hide');
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error);
+                    }
+                });
+            });
+            
+            // Reset validation when modal is closed
+            $('.modal').on('hidden.bs.modal', function() {
+                $(this).find('form')[0].reset();
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.alert').remove();
+            });
+        });
+        
+        // Check authentication
+        function checkAuth() {
+            $.ajax({
+                url: '../../controllers/admin/check_auth.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status !== 'success') {
+                        window.location.href = '../../views/public/login.php';
+                    }
+                },
+                error: function() {
+                    window.location.href = '../../views/public/login.php';
+                }
+            });
+        }
+        
+        // Load semesters
+        function loadSemesters() {
+            $.ajax({
+                url: '../../controllers/admin/get_semesters.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        renderSemestersTable(response.semesters);
+                    } else {
+                        showAlert('danger', 'Không thể tải danh sách học kỳ.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('danger', 'Đã xảy ra lỗi: ' + error);
+                }
+            });
+        }
+        
+        // Render semesters table
+        function renderSemestersTable(semesters) {
+            const tbody = $('#semestersTableBody');
+            tbody.empty();
+            
+            if (semesters.length === 0) {
+                tbody.html('<tr><td colspan="6" class="text-center">Không có dữ liệu</td></tr>');
+                return;
+            }
+            
+            semesters.forEach(function(semester) {
+                // Format dates
+                const startDate = new Date(semester.start_date).toLocaleDateString('vi-VN');
+                const endDate = new Date(semester.end_date).toLocaleDateString('vi-VN');
+                
+                const row = `
+                    <tr>
+                        <td>${semester.semester_id}</td>
+                        <td>${semester.semester_name}</td>
+                        <td>${semester.year}</td>
+                        <td>${startDate}</td>
+                        <td>${endDate}</td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary btn-edit" data-id="${semester.semester_id}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-delete" 
+                                    data-id="${semester.semester_id}" 
+                                    data-name="${semester.semester_name}" 
+                                    data-year="${semester.year}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        // Show alert message
+        function showAlert(type, message, modalId = null) {
+            const alertElement = modalId ? 
+                $(`<div class="alert alert-${type} mt-3">${message}</div>`) : 
+                $('#alertMessage');
+            
+            if (modalId) {
+                // Show alert inside modal
+                $(`#${modalId} .modal-body`).prepend(alertElement);
+            } else {
+                // Show alert on page
+                alertElement.removeClass('d-none alert-success alert-danger')
+                    .addClass(`alert-${type}`)
+                    .text(message)
+                    .show();
+                
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    alertElement.fadeOut();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

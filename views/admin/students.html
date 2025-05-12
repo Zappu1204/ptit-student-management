@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Sinh viên - PTIT Student Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <!-- Header would normally be included here -->
+    <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top py-2">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+                <i class="fas fa-graduation-cap me-2"></i>
+                <span>PTIT Student Management</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link">
+                            <i class="fas fa-user me-1"></i> Admin
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../controllers/public/logout_process.php">
+                            <i class="fas fa-sign-out-alt me-1"></i> Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Admin sidebar -->
+            <div class="col-md-3 col-lg-2">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">Admin Dashboard</h5>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <a href="dashboard.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tachometer-alt me-2"></i> Trang chủ
+                        </a>
+                        <a href="students.html" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-user-graduate me-2"></i> Quản lý Sinh viên
+                        </a>
+                        <a href="subjects.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-book me-2"></i> Quản lý Môn học
+                        </a>
+                        <a href="grades.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-chart-bar me-2"></i> Quản lý Điểm số
+                        </a>
+                        <a href="semesters.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-alt me-2"></i> Quản lý Học kỳ
+                        </a>
+                        <a href="reports.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-file-alt me-2"></i> Báo cáo
+                        </a>
+                        <a href="notifications.html" class="list-group-item list-group-item-action">
+                            <i class="fas fa-bell me-2"></i> Thông báo
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-9 col-lg-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Quản lý Sinh viên</h2>
+                    <a href="student_add.html" class="btn btn-success">
+                        <i class="fas fa-user-plus me-2"></i> Thêm Sinh viên
+                    </a>
+                </div>
+                
+                <div id="message-container"></div>
+                
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form id="searchForm" class="mb-4">
+                            <div class="input-group">
+                                <input type="text" class="form-control" placeholder="Tìm kiếm sinh viên (Mã SV, Tên, Lớp)..." name="search" id="searchInput">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="fas fa-search me-1"></i> Tìm kiếm
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered" id="studentsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Mã SV</th>
+                                        <th>Họ và tên</th>
+                                        <th>Ngày sinh</th>
+                                        <th>Giới tính</th>
+                                        <th>Lớp</th>
+                                        <th>Email</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody">
+                                    <!-- Data will be loaded here via AJAX -->
+                                    <tr>
+                                        <td colspan="7" class="text-center">Đang tải dữ liệu...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <nav>
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- Pagination will be generated via JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>PTIT Student Management System</h5>
+                    <p>Hệ thống quản lý sinh viên hiện đại, tiện lợi và dễ sử dụng.</p>
+                </div>
+                <div class="col-md-3">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../../controllers/public/logout_process.php" class="text-white">Đăng xuất</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Liên hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Hà Nội, Việt Nam</li>
+                        <li><i class="fas fa-envelope me-2"></i> info@ptit.edu.vn</li>
+                        <li><i class="fas fa-phone me-2"></i> (84) 123 456 789</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p class="mb-0">© 2025 PTIT Student Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa sinh viên này?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <form id="deleteForm" action="../../controllers/admin/student_delete_process.php" method="post">
+                        <input type="hidden" id="deleteStudentId" name="student_id">
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    
+    <!-- Custom Script -->
+    <script>
+        $(document).ready(function() {
+            // Load students data
+            loadStudents();
+            
+            // Search form submit
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                loadStudents(1, $('#searchInput').val());
+            });
+            
+            // Set up delete modal
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var studentId = button.data('student-id');
+                $('#deleteStudentId').val(studentId);
+            });
+        });
+        
+        function loadStudents(page = 1, search = '') {
+            $.ajax({
+                url: '../../controllers/admin/get_students.php',
+                type: 'GET',
+                data: {
+                    page: page,
+                    search: search
+                },
+                dataType: 'json',
+                success: function(data) {
+                    renderStudents(data.students);
+                    renderPagination(data.pagination);
+                },
+                error: function() {
+                    $('#studentsTableBody').html('<tr><td colspan="7" class="text-center">Không thể tải dữ liệu. Vui lòng thử lại sau.</td></tr>');
+                }
+            });
+        }
+        
+        function renderStudents(students) {
+            if (students.length > 0) {
+                var html = '';
+                
+                students.forEach(function(student) {
+                    html += '<tr>';
+                    html += '<td>' + student.student_id + '</td>';
+                    html += '<td>' + student.full_name + '</td>';
+                    html += '<td>' + formatDate(student.dob) + '</td>';
+                    html += '<td>' + student.gender + '</td>';
+                    html += '<td>' + student.class + '</td>';
+                    html += '<td>' + student.email + '</td>';
+                    html += '<td>';
+                    html += '<div class="btn-group btn-group-sm">';
+                    html += '<a href="student_view.html?id=' + student.student_id + '" class="btn btn-info" title="Xem"><i class="fas fa-eye"></i></a>';
+                    html += '<a href="student_edit.html?id=' + student.student_id + '" class="btn btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>';
+                    html += '<button type="button" class="btn btn-danger" title="Xóa" data-bs-toggle="modal" data-bs-target="#deleteModal" data-student-id="' + student.student_id + '"><i class="fas fa-trash-alt"></i></button>';
+                    html += '</div>';
+                    html += '</td>';
+                    html += '</tr>';
+                });
+                
+                $('#studentsTableBody').html(html);
+            } else {
+                $('#studentsTableBody').html('<tr><td colspan="7" class="text-center">Không tìm thấy sinh viên nào.</td></tr>');
+            }
+        }
+        
+        function renderPagination(pagination) {
+            if (pagination.total_pages > 1) {
+                var html = '';
+                
+                // Previous button
+                html += '<li class="page-item ' + (pagination.current_page === 1 ? 'disabled' : '') + '">';
+                html += '<a class="page-link" href="#" onclick="loadStudents(' + (pagination.current_page - 1) + ', $(\'#searchInput\').val()); return false;">&laquo;</a>';
+                html += '</li>';
+                
+                // Page numbers
+                for (var i = 1; i <= pagination.total_pages; i++) {
+                    html += '<li class="page-item ' + (pagination.current_page === i ? 'active' : '') + '">';
+                    html += '<a class="page-link" href="#" onclick="loadStudents(' + i + ', $(\'#searchInput\').val()); return false;">' + i + '</a>';
+                    html += '</li>';
+                }
+                
+                // Next button
+                html += '<li class="page-item ' + (pagination.current_page === pagination.total_pages ? 'disabled' : '') + '">';
+                html += '<a class="page-link" href="#" onclick="loadStudents(' + (pagination.current_page + 1) + ', $(\'#searchInput\').val()); return false;">&raquo;</a>';
+                html += '</li>';
+                
+                $('#pagination').html(html);
+            } else {
+                $('#pagination').html('');
+            }
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+    </script>
+</body>
+</html>

@@ -14,6 +14,7 @@
     --light-color: #f8f9fa;
     --dark-color: #343a40;
     --border-color: #dee2e6;
+    --danger-color: #cf081c;
 }
 
 body {
@@ -114,8 +115,17 @@ body {
     border-color: #0152ff;
 }
 
-/* .card-body .table-responsive .dt-container .dt-paging . */
+.card-body .pagination .page-item.active .page-link {
+    background-color: #0152ff;
+    color: white;
+    border-color: #0152ff;
+}
 
+.card-body .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
 
 /* Footer styling is now in footer.css */
 

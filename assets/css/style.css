@@ -1,0 +1,734 @@
+/**
+ * Student Management System - Main CSS
+ */
+
+/* Import footer styles */
+@import url('footer.css');
+
+/* Global styles */
+:root {
+    --primary-color: #0a58ca;
+    --secondary-color: #6c757d;
+    --background-color: #f8f9fa;
+    --text-color: #212529;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --border-color: #dee2e6;
+    --danger-color: #cf081c;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+/* Navbar styling */
+.navbar-brand {
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.nav-link.active {
+    font-weight: 500;
+    color: var(--primary-color) !important;
+}
+
+/* Sidebar styling */
+.sidebar {
+    background-color: var(--light-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar .nav-link {
+    color: var(--text-color);
+    padding: 0.75rem 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--primary-color);
+}
+
+.sidebar .nav-link.active {
+    font-weight: 500;
+}
+
+/* Card styling */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+/* Form controls */
+.form-control:focus, .form-select:focus {
+    border-color: rgba(220, 53, 69, 0.5);
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #0a58ca;
+    border-color: #0041a1;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.card-body .table-responsive .dt-container .dt-paging .pagination .page-item.active .page-link {
+    background-color: #0152ff; /* Changed to PTIT blue */
+    color: white;             /* Chữ màu trắng để tương phản */
+    border-color: #0152ff;    /* Matched with background color */
+    transition: all 0.3s ease; /* Add transition for smoother effects */
+}
+
+.card-body .table-responsive .dt-container .dt-paging .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
+
+.card-body .table-responsive .dataTables_wrapper .dataTables_paginate .pagination .page-item.active .page-link {
+    background-color: #0152ff; /* Changed to PTIT blue */
+    color: white;             /* Chữ màu trắng để tương phản */
+    border-color: #0152ff;    /* Matched with background color */
+    transition: all 0.3s ease; /* Add transition for smoother effects */
+}
+
+.card-body .table-responsive .dataTables_wrapper .dataTables_paginate .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
+
+.card-body .pagination .page-item.active .page-link {
+    background-color: #0152ff;
+    color: white;
+    border-color: #0152ff;
+}
+
+.card-body .pagination .page-item .page-link:hover {
+    background-color: #e9f0ff; /* Light blue on hover */
+    color: #0152ff;
+    border-color: #0152ff;
+}
+
+/* Footer styling is now in footer.css */
+
+/* Hero section styles */
+.hero-section {
+    background-color: var(--danger-color);
+    color: white;
+    padding: 60px 0;
+    margin-bottom: 30px;
+}
+
+/* Auth pages styles */
+.auth-card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.auth-card .card-header {
+    border-bottom: none;
+    background-color: #fff;
+    padding: 2rem 2rem 1rem;
+}
+
+.auth-logo {
+    max-height: 100px;
+    margin-bottom: 1rem;
+}
+
+.auth-card .card-body {
+    padding: 2rem;
+}
+
+/* Button styles */
+.btn-outline-danger {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover {
+    color: white;
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* Table styles */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.table th {
+    font-weight: 500;
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Card styles */
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-bottom: none;
+    background-color: #fff;
+    padding: 1rem 1.25rem;
+}
+
+.card-footer {
+    border-top: none;
+    background-color: #fff;
+    padding: 1rem 1.25rem;
+}
+
+/* Form styles */
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Badge styles */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    border-radius: 0.25rem;
+}
+
+/* Alert styles */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+/* Avatar styles */
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.avatar-sm {
+    width: 50px;
+    height: 50px;
+}
+
+.avatar-lg {
+    width: 150px;
+    height: 150px;
+}
+
+/* Pagination styles */
+.pagination .page-item.active .page-link {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.pagination .page-link {
+    color: var(--primary-color);
+}
+
+.pagination .page-link:hover {
+    color: #0a58ca;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* DataTables custom styles */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+    border: 1px solid var(--primary-color) !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #e9ecef !important;
+    color: var(--primary-color) !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+/* Print styles */
+@media print {
+    .sidebar, .navbar, footer, .card-header .btn, .btn-toolbar {
+        display: none !important;
+    }
+    
+    .main-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    .card {
+        box-shadow: none !important;
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+}
+
+/* Utilities */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Animated loading spinner */
+.spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-width: 0.2em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        top: 56px;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 0;
+        width: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        visibility: hidden;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .sidebar.show {
+        visibility: visible;
+    }
+    
+    .sidebar > div {
+        width: 80%;
+        max-width: 300px;
+        background-color: #343a40;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+    }
+    
+    .sidebar.show > div {
+        transform: translateX(0);
+    }
+}
+
+/* Custom styles for PTIT Student Management System */
+
+/* Base styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+/* PTIT color scheme - changed from red to blue */
+:root {
+    --ptit-blue: #0152ff;
+    --ptit-dark-blue: #013aaa;
+    --ptit-white: #ffffff;
+    --ptit-gray: #6c757d;
+    --ptit-light-gray: #f8f9fa;
+}
+
+/* Header */
+header {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.text-white {
+    color: #ffffff !important;
+}
+
+/* Sidebar */
+.list-group-item.active {
+    background-color: var(--ptit-blue) !important;
+    border-color: var(--ptit-blue) !important;
+}
+
+.list-group-item:hover:not(.active) {
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+/* Card styling */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(1, 82, 255, 0.15) !important;
+}
+
+.card-header {
+    font-weight: 500;
+}
+
+/* Button styles - Changed from red to blue */
+.btn-primary {
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--ptit-dark-blue);
+    border-color: var(--ptit-dark-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(1, 82, 255, 0.2);
+}
+
+.btn-outline-primary {
+    color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    color: var(--ptit-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(1, 82, 255, 0.2);
+}
+
+/* Table styling */
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(1, 82, 255, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+/* Badge colors */
+.badge.bg-primary {
+    background-color: var(--ptit-blue) !important;
+    transition: all 0.3s ease;
+}
+
+.badge.bg-primary:hover {
+    background-color: var(--ptit-dark-blue) !important;
+    transform: scale(1.05);
+}
+
+/* Dashboard stats cards */
+.rounded-circle {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.rounded-circle:hover {
+    transform: scale(1.1);
+}
+
+/* Login form */
+.form-signin {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+.form-control:focus {
+    border-color: var(--ptit-blue);
+    box-shadow: 0 0 0 0.25rem rgba(1, 82, 255, 0.25);
+}
+
+/* Footer */
+footer {
+    margin-top: 3rem;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: var(--ptit-blue);
+    border-color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link {
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    color: var(--ptit-dark-blue);
+    background-color: #e9f0ff;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Homepage styles */
+.list-group-item-action:hover {
+    background-color: rgba(1, 82, 255, 0.05);
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+/* Student profile */
+.student-profile-header {
+    background-color: var(--ptit-blue);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+/* Charts */
+canvas {
+    max-width: 100%;
+}
+
+/* Print styles */
+@media print {
+    header, footer, .sidebar, .no-print {
+        display: none !important;
+    }
+    
+    .container-fluid {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .card-header {
+        background-color: #f8f9fa !important;
+        color: #333 !important;
+        border-bottom: 1px solid #dee2e6 !important;
+    }
+}
+
+/* Hero section */
+.hero-section {
+    background-color: var(--ptit-blue);
+    color: white;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+}
+
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Auth form */
+.auth-card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    box-shadow: 0 10px 20px rgba(1, 82, 255, 0.15);
+}
+
+.auth-card .card-header {
+    border-radius: 10px 10px 0 0;
+    background-color: var(--ptit-blue);
+    color: white;
+    padding: 1.5rem;
+}
+
+.auth-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.auth-logo:hover {
+    transform: scale(1.05);
+}
+
+/* Sidebar */
+.student-sidebar .list-group-item {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.student-sidebar .list-group-item:hover {
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    padding-left: 1.5rem;
+}
+
+.student-sidebar .list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+
+.admin-sidebar .list-group-item {
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+    padding: 1rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.admin-sidebar .list-group-item:hover {
+    background-color: #e9f0ff;
+    color: var(--ptit-blue);
+    padding-left: 1.5rem;
+}
+
+.admin-sidebar .list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Top students section */
+.top-students-card {
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.top-students-card:hover {
+    box-shadow: 0 8px 16px rgba(1, 82, 255, 0.15);
+}
+
+.top-student {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+}
+
+.top-student:hover {
+    background-color: #e9f0ff;
+    transform: translateX(5px);
+}
+
+.top-student:last-child {
+    border-bottom: none;
+}
+
+.top-student .student-rank {
+    width: 36px;
+    height: 36px;
+    background-color: var(--ptit-blue);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+.top-student:hover .student-rank {
+    transform: scale(1.1);
+}
+
+.top-student-1 .student-rank {
+    background-color: #ffc107; /* gold */
+}
+
+.top-student-2 .student-rank {
+    background-color: #6c757d; /* silver */
+}
+
+.top-student-3 .student-rank {
+    background-color: #cd7f32; /* bronze */
+}
+
+.top-student .student-gpa {
+    font-weight: bold;
+    color: var(--ptit-blue);
+    transition: all 0.3s ease;
+}
+
+.top-student:hover .student-gpa {
+    transform: scale(1.05);
+}

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quản lý Điểm số</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <!-- Sidebar placeholder -->
+            <div id="sidebar-container" class="col-md-3 col-lg-2"></div>
+            
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h2">Quản lý Điểm số</h1>
+                    <button id="btnAddGrade" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Thêm Điểm mới
+                    </button>
+                </div>
+                
+                <!-- Alert messages -->
+                <div id="alertMessage" class="alert d-none"></div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">Bộ lọc</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="filterSemester" class="form-label">Học kỳ</label>
+                                <select id="filterSemester" class="form-select select2">
+                                    <option value="">Tất cả học kỳ</option>
+                                    <!-- Semesters will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="filterStudent" class="form-label">Sinh viên</label>
+                                <select id="filterStudent" class="form-select select2">
+                                    <option value="">Tất cả sinh viên</option>
+                                    <!-- Students will be loaded here -->
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="filterSubject" class="form-label">Môn học</label>
+                                <select id="filterSubject" class="form-select select2">
+                                    <option value="">Tất cả môn học</option>
+                                    <!-- Subjects will be loaded here -->
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-end">
+                                <button id="btnFilter" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i> Lọc
+                                </button>
+                                <button id="btnResetFilter" class="btn btn-secondary">
+                                    <i class="fas fa-undo"></i> Đặt lại
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grades table -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Mã SV</th>
+                                        <th>Họ tên</th>
+                                        <th>Môn học</th>
+                                        <th>Học kỳ</th>
+                                        <th>Điểm số</th>
+                                        <th class="text-center">Tác vụ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gradesTableBody">
+                                    <!-- Table data will be loaded here via AJAX -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <nav id="pagination" aria-label="Page navigation" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <!-- Pagination will be generated here -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Grade Modal -->
+    <div class="modal fade" id="addGradeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm Điểm mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addGradeForm">
+                        <div class="mb-3">
+                            <label for="semester_id" class="form-label">Học kỳ <span class="text-danger">*</span></label>
+                            <select class="form-select" id="semester_id" name="semester_id" required>
+                                <option value="">Chọn học kỳ</option>
+                                <!-- Options will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Sinh viên <span class="text-danger">*</span></label>
+                            <select class="form-select select2" id="student_id" name="student_id" required>
+                                <option value="">Chọn sinh viên</option>
+                                <!-- Options will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject_id" class="form-label">Môn học <span class="text-danger">*</span></label>
+                            <select class="form-select select2" id="subject_id" name="subject_id" required>
+                                <option value="">Chọn môn học</option>
+                                <!-- Options will be loaded here -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="grade" class="form-label">Điểm số <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="grade" name="grade" min="0" max="10" step="0.1" required>
+                            <div class="form-text">Điểm số từ 0 đến 10</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnSaveGrade" class="btn btn-primary">Lưu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edit Grade Modal -->
+    <div class="modal fade" id="editGradeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chỉnh sửa Điểm số</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editGradeForm">
+                        <input type="hidden" id="edit_grade_id" name="grade_id">
+                        <div class="mb-3">
+                            <label class="form-label">Sinh viên</label>
+                            <input type="text" class="form-control" id="edit_student_name" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Môn học</label>
+                            <input type="text" class="form-control" id="edit_subject_name" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Học kỳ</label>
+                            <input type="text" class="form-control" id="edit_semester_name" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_grade" class="form-label">Điểm số <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="edit_grade" name="grade" min="0" max="10" step="0.1" required>
+                            <div class="form-text">Điểm số từ 0 đến 10</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnUpdateGrade" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteGradeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa điểm số này?</p>
+                    <p id="deleteGradeInfo"></p>
+                    <input type="hidden" id="delete_grade_id">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" id="btnConfirmDelete" class="btn btn-danger">Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- Custom scripts -->
+    <script>
+        // Variables
+        let currentPage = 1;
+        let limit = 10;
+        let selectedSemester = '';
+        let selectedStudent = '';
+        let selectedSubject = '';
+        let allSemesters = [];
+        let allStudents = [];
+        let allSubjects = [];
+        
+        // Document ready
+        $(document).ready(function() {
+            // Load sidebar
+            $('#sidebar-container').load('../../views/includes/admin_sidebar.php', function() {
+                // Highlight active menu item
+                $('#menu-grades').addClass('active');
+            });
+            
+            // Initialize Select2
+            $('.select2').select2({
+                theme: 'bootstrap-5'
+            });
+            
+            // Check authentication
+            checkAuth();
+            
+            // Initial data load
+            loadGrades();
+            
+            // Filter button click
+            $('#btnFilter').click(function() {
+                selectedSemester = $('#filterSemester').val();
+                selectedStudent = $('#filterStudent').val();
+                selectedSubject = $('#filterSubject').val();
+                currentPage = 1;
+                loadGrades();
+            });
+            
+            // Reset filter button click
+            $('#btnResetFilter').click(function() {
+                $('#filterSemester').val('').trigger('change');
+                $('#filterStudent').val('').trigger('change');
+                $('#filterSubject').val('').trigger('change');
+                
+                selectedSemester = '';
+                selectedStudent = '';
+                selectedSubject = '';
+                currentPage = 1;
+                loadGrades();
+            });
+            
+            // Add grade modal show
+            $('#btnAddGrade').click(function() {
+                // Reset form
+                $('#addGradeForm')[0].reset();
+                
+                // Load dropdowns if not already loaded
+                if ($('#semester_id option').length <= 1) {
+                    loadDropdowns();
+                }
+                
+                // Reset select2 dropdowns
+                $('#student_id, #subject_id').val('').trigger('change');
+                
+                // Show modal
+                $('#addGradeModal').modal('show');
+            });
+            
+            // Save new grade
+            $('#btnSaveGrade').click(function() {
+                const form = $('#addGradeForm');
+                
+                // Form validation
+                if (!form[0].checkValidity()) {
+                    form.find(':input').addClass('is-invalid');
+                    return;
+                }
+                
+                // Get form data
+                const formData = {
+                    semester_id: $('#semester_id').val(),
+                    student_id: $('#student_id').val(),
+                    subject_id: $('#subject_id').val(),
+                    grade: $('#grade').val()
+                };
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/grade_add_process.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Close modal
+                            $('#addGradeModal').modal('hide');
+                            
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload grades
+                            loadGrades();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message, 'addGradeModal');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error, 'addGradeModal');
+                    }
+                });
+            });
+            
+            // Open edit modal
+            $(document).on('click', '.btn-edit', function() {
+                const gradeId = $(this).data('id');
+                const studentName = $(this).data('student');
+                const subjectName = $(this).data('subject');
+                const semesterName = $(this).data('semester');
+                const gradeValue = $(this).data('grade');
+                
+                // Fill form
+                $('#edit_grade_id').val(gradeId);
+                $('#edit_student_name').val(studentName);
+                $('#edit_subject_name').val(subjectName);
+                $('#edit_semester_name').val(semesterName);
+                $('#edit_grade').val(gradeValue);
+                
+                // Show modal
+                $('#editGradeModal').modal('show');
+            });
+            
+            // Update grade
+            $('#btnUpdateGrade').click(function() {
+                const form = $('#editGradeForm');
+                
+                // Form validation
+                if (!form[0].checkValidity()) {
+                    form.find(':input').addClass('is-invalid');
+                    return;
+                }
+                
+                // Get form data
+                const formData = {
+                    grade_id: $('#edit_grade_id').val(),
+                    grade: $('#edit_grade').val()
+                };
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/grade_edit_process.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            // Close modal
+                            $('#editGradeModal').modal('hide');
+                            
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload grades
+                            loadGrades();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message, 'editGradeModal');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error, 'editGradeModal');
+                    }
+                });
+            });
+            
+            // Open delete confirmation modal
+            $(document).on('click', '.btn-delete', function() {
+                const gradeId = $(this).data('id');
+                const studentName = $(this).data('student');
+                const subjectName = $(this).data('subject');
+                
+                $('#delete_grade_id').val(gradeId);
+                $('#deleteGradeInfo').text(`Sinh viên: ${studentName} - Môn học: ${subjectName}`);
+                $('#deleteGradeModal').modal('show');
+            });
+            
+            // Confirm delete
+            $('#btnConfirmDelete').click(function() {
+                const gradeId = $('#delete_grade_id').val();
+                
+                // Send AJAX request
+                $.ajax({
+                    url: '../../controllers/admin/grade_delete_process.php',
+                    type: 'POST',
+                    data: { grade_id: gradeId },
+                    dataType: 'json',
+                    success: function(response) {
+                        // Close modal
+                        $('#deleteGradeModal').modal('hide');
+                        
+                        if (response.status === 'success') {
+                            // Show success message
+                            showAlert('success', response.message);
+                            
+                            // Reload grades
+                            loadGrades();
+                        } else {
+                            // Show error message
+                            showAlert('danger', response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#deleteGradeModal').modal('hide');
+                        showAlert('danger', 'Đã xảy ra lỗi: ' + error);
+                    }
+                });
+            });
+            
+            // Reset validation when modal is closed
+            $('.modal').on('hidden.bs.modal', function() {
+                $(this).find('form')[0].reset();
+                $(this).find('.is-invalid').removeClass('is-invalid');
+                $(this).find('.alert').remove();
+            });
+        });
+        
+        // Check authentication
+        function checkAuth() {
+            $.ajax({
+                url: '../../controllers/admin/check_auth.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status !== 'success') {
+                        window.location.href = '../../views/public/login.php';
+                    }
+                },
+                error: function() {
+                    window.location.href = '../../views/public/login.php';
+                }
+            });
+        }
+        
+        // Load grades
+        function loadGrades() {
+            $.ajax({
+                url: '../../controllers/admin/get_grades.php',
+                type: 'GET',
+                data: {
+                    page: currentPage,
+                    limit: limit,
+                    semester_id: selectedSemester,
+                    student_id: selectedStudent,
+                    subject_id: selectedSubject
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        // Save filter data
+                        allSemesters = response.filters.semesters;
+                        allStudents = response.filters.students;
+                        allSubjects = response.filters.subjects;
+                        
+                        // Populate filters if empty
+                        populateFilters(response.filters);
+                        
+                        // Render grades table
+                        renderGradesTable(response.grades);
+                        
+                        // Render pagination
+                        renderPagination(response.pagination);
+                    } else {
+                        showAlert('danger', 'Không thể tải danh sách điểm số.');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showAlert('danger', 'Đã xảy ra lỗi: ' + error);
+                }
+            });
+        }
+        
+        // Populate filter dropdowns
+        function populateFilters(filters) {
+            // Semester filter
+            if ($('#filterSemester option').length <= 1) {
+                const semesterSelect = $('#filterSemester');
+                
+                filters.semesters.forEach(function(semester) {
+                    semesterSelect.append(`<option value="${semester.semester_id}">${semester.semester_name} - ${semester.year}</option>`);
+                });
+                
+                // Set selected value if any
+                if (filters.selected.semester_id) {
+                    semesterSelect.val(filters.selected.semester_id).trigger('change');
+                }
+            }
+            
+            // Student filter
+            if ($('#filterStudent option').length <= 1) {
+                const studentSelect = $('#filterStudent');
+                
+                filters.students.forEach(function(student) {
+                    studentSelect.append(`<option value="${student.student_id}">${student.student_id} - ${student.full_name}</option>`);
+                });
+                
+                // Set selected value if any
+                if (filters.selected.student_id) {
+                    studentSelect.val(filters.selected.student_id).trigger('change');
+                }
+            }
+            
+            // Subject filter
+            if ($('#filterSubject option').length <= 1) {
+                const subjectSelect = $('#filterSubject');
+                
+                filters.subjects.forEach(function(subject) {
+                    subjectSelect.append(`<option value="${subject.subject_id}">${subject.subject_id} - ${subject.subject_name}</option>`);
+                });
+                
+                // Set selected value if any
+                if (filters.selected.subject_id) {
+                    subjectSelect.val(filters.selected.subject_id).trigger('change');
+                }
+            }
+        }
+        
+        // Load dropdowns for add grade modal
+        function loadDropdowns() {
+            // Semester dropdown
+            const semesterSelect = $('#semester_id');
+            
+            allSemesters.forEach(function(semester) {
+                semesterSelect.append(`<option value="${semester.semester_id}">${semester.semester_name} - ${semester.year}</option>`);
+            });
+            
+            // Student dropdown
+            const studentSelect = $('#student_id');
+            
+            allStudents.forEach(function(student) {
+                studentSelect.append(`<option value="${student.student_id}">${student.student_id} - ${student.full_name}</option>`);
+            });
+            
+            // Subject dropdown
+            const subjectSelect = $('#subject_id');
+            
+            allSubjects.forEach(function(subject) {
+                subjectSelect.append(`<option value="${subject.subject_id}">${subject.subject_id} - ${subject.subject_name}</option>`);
+            });
+            
+            // Apply select2
+            $('#student_id, #subject_id').select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#addGradeModal')
+            });
+        }
+        
+        // Render grades table
+        function renderGradesTable(grades) {
+            const tbody = $('#gradesTableBody');
+            tbody.empty();
+            
+            if (grades.length === 0) {
+                tbody.html('<tr><td colspan="7" class="text-center">Không có dữ liệu</td></tr>');
+                return;
+            }
+            
+            grades.forEach(function(grade) {
+                const row = `
+                    <tr>
+                        <td>${grade.id}</td>
+                        <td>${grade.student_id}</td>
+                        <td>${grade.full_name}</td>
+                        <td>${grade.subject_name}</td>
+                        <td>${grade.semester_name} - ${grade.year}</td>
+                        <td><span class="badge bg-${getGradeClass(grade.grade)}">${grade.grade}</span></td>
+                        <td class="text-center">
+                            <button class="btn btn-sm btn-primary btn-edit" 
+                                    data-id="${grade.id}" 
+                                    data-student="${grade.full_name}"
+                                    data-subject="${grade.subject_name}"
+                                    data-semester="${grade.semester_name} - ${grade.year}"
+                                    data-grade="${grade.grade}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger btn-delete" 
+                                    data-id="${grade.id}" 
+                                    data-student="${grade.full_name}" 
+                                    data-subject="${grade.subject_name}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        // Get color class for grade badges
+        function getGradeClass(grade) {
+            const numGrade = parseFloat(grade);
+            
+            if (numGrade >= 8.5) {
+                return 'success';
+            } else if (numGrade >= 7) {
+                return 'info';
+            } else if (numGrade >= 5) {
+                return 'warning';
+            } else {
+                return 'danger';
+            }
+        }
+        
+        // Render pagination
+        function renderPagination(pagination) {
+            const paginationElement = $('#pagination ul');
+            paginationElement.empty();
+            
+            // If there's only one page, hide pagination
+            if (pagination.pages <= 1) {
+                $('#pagination').hide();
+                return;
+            }
+            
+            $('#pagination').show();
+            
+            // Previous button
+            const prevDisabled = pagination.page === 1 ? 'disabled' : '';
+            paginationElement.append(`
+                <li class="page-item ${prevDisabled}">
+                    <a class="page-link" href="#" data-page="${pagination.page - 1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            `);
+            
+            // Page numbers
+            let startPage = Math.max(1, pagination.page - 2);
+            let endPage = Math.min(pagination.pages, pagination.page + 2);
+            
+            // Adjust start and end pages to always show 5 pages if available
+            if (endPage - startPage < 4 && pagination.pages > 5) {
+                if (startPage === 1) {
+                    endPage = Math.min(startPage + 4, pagination.pages);
+                } else if (endPage === pagination.pages) {
+                    startPage = Math.max(endPage - 4, 1);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const active = i === pagination.page ? 'active' : '';
+                paginationElement.append(`
+                    <li class="page-item ${active}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `);
+            }
+            
+            // Next button
+            const nextDisabled = pagination.page === pagination.pages ? 'disabled' : '';
+            paginationElement.append(`
+                <li class="page-item ${nextDisabled}">
+                    <a class="page-link" href="#" data-page="${pagination.page + 1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            `);
+            
+            // Page click event
+            $('.page-link').click(function(e) {
+                e.preventDefault();
+                
+                // Don't do anything if disabled
+                if ($(this).parent().hasClass('disabled') || $(this).parent().hasClass('active')) {
+                    return;
+                }
+                
+                currentPage = parseInt($(this).data('page'));
+                loadGrades();
+            });
+        }
+        
+        // Show alert message
+        function showAlert(type, message, modalId = null) {
+            const alertElement = modalId ? 
+                $(`<div class="alert alert-${type} mt-3">${message}</div>`) : 
+                $('#alertMessage');
+            
+            if (modalId) {
+                // Show alert inside modal
+                $(`#${modalId} .modal-body`).prepend(alertElement);
+            } else {
+                // Show alert on page
+                alertElement.removeClass('d-none alert-success alert-danger')
+                    .addClass(`alert-${type}`)
+                    .text(message)
+                    .show();
+                
+                // Hide after 5 seconds
+                setTimeout(() => {
+                    alertElement.fadeOut();
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>

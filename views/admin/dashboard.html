@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - PTIT Student Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
+    
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.2rem;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #f8f9fa;
+            color: #dc3545;
+        }
+        .sidebar .nav-link.active {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column h-100">
+    <!-- Header Section (loaded dynamically) -->
+    <div id="header"></div>
+
+    <div class="container-fluid flex-grow-1">
+        <div class="row h-100">
+            <!-- Admin Sidebar (loaded dynamically) -->
+            <div id="admin-sidebar" class="col-lg-3 col-xl-2 px-0 bg-light sidebar"></div>
+            
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 py-4">
+                <h2 class="mb-4">Trang quản trị</h2>
+                
+                <!-- Stats cards -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Sinh viên</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="studentCount">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="rounded-circle bg-danger text-white p-3">
+                                            <i class="fas fa-user-graduate"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Môn học</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="subjectCount">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="rounded-circle bg-success text-white p-3">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Điểm số</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="gradeCount">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="rounded-circle bg-info text-white p-3">
+                                            <i class="fas fa-graduation-cap"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-uppercase mb-1">Học kỳ</div>
+                                        <div class="h5 mb-0 font-weight-bold" id="semesterCount">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="rounded-circle bg-warning text-white p-3">
+                                            <i class="fas fa-calendar-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick actions -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Thao tác nhanh</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <a href="students.html" class="btn btn-outline-danger btn-lg d-block">
+                                    <i class="fas fa-user-plus me-2"></i> Quản lý Sinh viên
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="subjects.html" class="btn btn-outline-danger btn-lg d-block">
+                                    <i class="fas fa-plus-circle me-2"></i> Quản lý Môn học
+                                </a>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <a href="grades.html" class="btn btn-outline-danger btn-lg d-block">
+                                    <i class="fas fa-chart-line me-2"></i> Quản lý Điểm số
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent activity -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Thông tin hệ thống</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i> Chào mừng đến với hệ thống quản lý Sinh viên PTIT.
+                        </div>
+                        <p>Hệ thống quản lý sinh viên PTIT giúp quản trị viên:</p>
+                        <ul>
+                            <li>Quản lý thông tin sinh viên</li>
+                            <li>Quản lý danh sách môn học</li>
+                            <li>Nhập và theo dõi điểm số</li>
+                            <li>Quản lý học kỳ</li>
+                            <li>Tạo báo cáo và thống kê</li>
+                        </ul>
+                        <p>Để bắt đầu, hãy sử dụng các liên kết trong thanh điều hướng bên trái.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
+    
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+    <!-- Custom Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active link in the sidebar
+            document.querySelectorAll('#sidebar-dashboard').forEach(link => {
+                link.classList.add('active');
+            });
+            
+            // Fetch admin dashboard data
+            fetch('../../controllers/admin/get_dashboard_data.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching dashboard data:', data.message);
+                        return;
+                    }
+                    
+                    // Update counts
+                    document.getElementById('studentCount').textContent = data.studentCount || '0';
+                    document.getElementById('subjectCount').textContent = data.subjectCount || '0';
+                    document.getElementById('gradeCount').textContent = data.gradeCount || '0';
+                    document.getElementById('semesterCount').textContent = data.semesterCount || '0';
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        });
+    </script>
+</body>
+</html>

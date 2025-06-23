@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng điểm - PTIT Student Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.css" rel="stylesheet" 
+    integrity="sha384-hGoHjV7OyUWri8NopwGqlstj4hDVsperCk9BPyX+MZb56/Mj81CK4htI0G24m4Es" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
+    
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.2rem;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+        .sidebar .nav-link.active {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section (loaded dynamically) -->
+    <div id="header"></div>
+
+        <div class="container-fluid">
+        <div class="row">
+            <!-- Student Sidebar (loaded dynamically) -->
+            <div id="student-sidebar" class="col-lg-3 col-xl-2 px-0 bg-light sidebar"></div>
+            
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 py-4">
+                <h2 class="mb-4">Bảng điểm</h2>
+                
+                <!-- Grade summary -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="display-4 text-danger mb-2">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <h5 class="card-title">Điểm trung bình tích lũy</h5>
+                                <p class="card-text display-6 fw-bold" id="totalGpa">0.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="display-4 text-success mb-2">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <h5 class="card-title">Tín chỉ tích lũy</h5>
+                                <p class="card-text display-6 fw-bold" id="totalCredits">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="display-4 text-primary mb-2">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h5 class="card-title">Số môn học đã hoàn thành</h5>
+                                <p class="card-text display-6 fw-bold" id="completedSubjects">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Grades by semester -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Bảng điểm theo học kỳ</h5>
+                        <div>
+                            <select class="form-select form-select-sm" id="semesterFilter">
+                                <option value="all">Tất cả học kỳ</option>
+                                <!-- Semesters will be loaded dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="semesterGradesContainer">
+                            <!-- Semester grades will be loaded dynamically -->
+                            <div class="p-4 text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2">Đang tải dữ liệu...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Print button -->
+                <div class="text-end mb-4">
+                    <button type="button" class="btn btn-outline-primary" id="printTranscript">
+                        <i class="fas fa-print me-1"></i> In bảng điểm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Print JS -->
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    
+    <!-- Custom Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active link in the sidebar
+            document.querySelectorAll('#sidebar-grades').forEach(link => {
+                link.classList.add('active');
+            });
+            
+            // Fetch student grades data
+            fetch('../../controllers/student/get_student_grades.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching grades data:', data.message);
+                        return;
+                    }
+                    
+                    // Update summary stats
+                    document.getElementById('totalGpa').textContent = parseFloat(data.summary.gpa).toFixed(2) || '0.00';
+                    document.getElementById('totalCredits').textContent = data.summary.total_credits || '0';
+                    document.getElementById('completedSubjects').textContent = data.summary.completed_subjects || '0';
+                    
+                    // Load semesters into filter
+                    const semesterFilter = document.getElementById('semesterFilter');
+                    data.semesters.forEach(semester => {
+                        const option = document.createElement('option');
+                        option.value = semester.id;
+                        option.textContent = semester.name;
+                        semesterFilter.appendChild(option);
+                    });
+                    
+                    // Generate grades tables by semester
+                    renderGradesBySemester(data.grades_by_semester);
+                    
+                    // Set up semester filter change event
+                    semesterFilter.addEventListener('change', function() {
+                        const selectedSemester = this.value;
+                        filterGradesBySemester(selectedSemester, data.grades_by_semester);
+                    });
+                    
+                    // Set up print button
+                    document.getElementById('printTranscript').addEventListener('click', function() {
+                        printTranscript(data);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('semesterGradesContainer').innerHTML = 
+                        '<div class="alert alert-danger m-3">Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</div>';
+                });
+        });
+        
+        function renderGradesBySemester(gradesBySemester) {
+            const container = document.getElementById('semesterGradesContainer');
+            container.innerHTML = '';
+            
+            if (Object.keys(gradesBySemester).length === 0) {
+                container.innerHTML = '<div class="alert alert-info m-3">Chưa có dữ liệu điểm.</div>';
+                return;
+            }
+            
+            for (const semesterId in gradesBySemester) {
+                const semesterData = gradesBySemester[semesterId];
+                const semesterDiv = document.createElement('div');
+                semesterDiv.className = 'semester-section mb-4';
+                semesterDiv.dataset.semesterId = semesterId;
+                
+                // Create semester header
+                const semesterHeader = document.createElement('div');
+                semesterHeader.className = 'px-3 py-2 bg-light border-top border-bottom';
+                semesterHeader.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">${semesterData.semester_name}</h6>
+                        <span class="badge bg-primary">GPA: ${parseFloat(semesterData.semester_gpa).toFixed(2)}</span>
+                    </div>
+                `;
+                semesterDiv.appendChild(semesterHeader);
+                
+                // Create table for grades
+                const table = document.createElement('table');
+                table.className = 'table table-hover';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Mã môn</th>
+                            <th style="width: 40%">Tên môn học</th>
+                            <th style="width: 10%" class="text-center">Tín chỉ</th>
+                            <th style="width: 10%" class="text-center">Điểm QT</th>
+                            <th style="width: 10%" class="text-center">Điểm thi</th>
+                            <th style="width: 10%" class="text-center">Điểm TB</th>
+                            <th style="width: 10%" class="text-center">Điểm chữ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${semesterData.courses.map(course => `
+                            <tr>
+                                <td>${course.course_code}</td>
+                                <td>${course.course_name}</td>
+                                <td class="text-center">${course.credits}</td>
+                                <td class="text-center">${parseFloat(course.midterm_score).toFixed(1)}</td>
+                                <td class="text-center">${parseFloat(course.final_score).toFixed(1)}</td>
+                                <td class="text-center">${parseFloat(course.average_score).toFixed(1)}</td>
+                                <td class="text-center">${course.grade_letter}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                `;
+                semesterDiv.appendChild(table);
+                
+                container.appendChild(semesterDiv);
+            }
+        }
+        
+        function filterGradesBySemester(semesterId, gradesBySemester) {
+            const allSections = document.querySelectorAll('.semester-section');
+            
+            if (semesterId === 'all') {
+                // Show all semesters
+                allSections.forEach(section => {
+                    section.style.display = 'block';
+                });
+            } else {
+                // Show only selected semester
+                allSections.forEach(section => {
+                    if (section.dataset.semesterId === semesterId) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+        }
+        
+        function printTranscript(data) {
+            // Create print content
+            let printContent = `
+                <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h1 style="color: #007bff;">Bảng điểm sinh viên</h1>
+                        <h3>${data.student_info.full_name} - ${data.student_info.student_id}</h3>
+                        <p>Lớp: ${data.student_info.class} | Khoa: ${data.student_info.department}</p>
+                    </div>
+                    
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                        <div style="text-align: center; padding: 10px; border: 1px solid #ddd; width: 30%;">
+                            <h4>GPA</h4>
+                            <p style="font-size: 24px; font-weight: bold;">${parseFloat(data.summary.gpa).toFixed(2)}</p>
+                        </div>
+                        <div style="text-align: center; padding: 10px; border: 1px solid #ddd; width: 30%;">
+                            <h4>Tín chỉ tích lũy</h4>
+                            <p style="font-size: 24px; font-weight: bold;">${data.summary.total_credits}</p>
+                        </div>
+                        <div style="text-align: center; padding: 10px; border: 1px solid #ddd; width: 30%;">
+                            <h4>Số môn đã học</h4>
+                            <p style="font-size: 24px; font-weight: bold;">${data.summary.completed_subjects}</p>
+                        </div>
+                    </div>
+            `;
+            
+            // Add each semester's grades
+            for (const semesterId in data.grades_by_semester) {
+                const semesterData = data.grades_by_semester[semesterId];
+                printContent += `
+                    <div style="margin-bottom: 30px;">
+                        <div style="background-color: #f8f9fa; padding: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between;">
+                            <h3 style="margin: 0;">${semesterData.semester_name}</h3>
+                            <span style="background-color: #007bff; color: white; padding: 5px 10px; border-radius: 5px;">GPA: ${parseFloat(semesterData.semester_gpa).toFixed(2)}</span>
+                        </div>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="background-color: #f8f9fa;">
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%;">Mã môn</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 40%;">Tên môn học</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%; text-align: center;">Tín chỉ</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%; text-align: center;">Điểm QT</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%; text-align: center;">Điểm thi</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%; text-align: center;">Điểm TB</th>
+                                    <th style="border: 1px solid #ddd; padding: 8px; width: 10%; text-align: center;">Điểm chữ</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                // Add rows for each course
+                semesterData.courses.forEach(course => {
+                    printContent += `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${course.course_code}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px;">${course.course_name}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${course.credits}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${parseFloat(course.midterm_score).toFixed(1)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${parseFloat(course.final_score).toFixed(1)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${parseFloat(course.average_score).toFixed(1)}</td>
+                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${course.grade_letter}</td>
+                        </tr>
+                    `;
+                });
+                
+                printContent += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            }
+            
+            printContent += `
+                <div style="text-align: right; margin-top: 30px;">
+                    <p>Ngày in: ${new Date().toLocaleDateString('vi-VN')}</p>
+                </div>
+            </div>
+            `;
+            
+            // Use printJS to print the content
+            printJS({
+                printable: printContent,
+                type: 'raw-html',
+                header: null,
+                css: null,
+                style: null,
+                documentTitle: `Bảng_điểm_${data.student_info.student_id}`
+            });
+        }
+    </script>
+</body>
+</html>

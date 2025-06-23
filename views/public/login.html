@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - PTIT Student Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.3.0/datatables.min.css" rel="stylesheet" 
+        integrity="sha384-hGoHjV7OyUWri8NopwGqlstj4hDVsperCk9BPyX+MZb56/Mj81CK4htI0G24m4Es" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
+    
+    <style>
+        .auth-card {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            border: none;
+            overflow: hidden;
+        }
+        .auth-card .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+        }
+        .auth-logo {
+            max-height: 80px;
+            margin-bottom: 10px;
+        }
+        .toggle-password {
+            cursor: pointer;
+        }
+        .auth-card .card-body {
+            padding: 30px;
+        }
+        .alert ul {
+            margin-bottom: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 col-lg-5">
+                <div class="card auth-card">
+                    <div class="card-header text-center">
+                        <img src="../../assets/images/ptit-logo.png" alt="PTIT Logo" class="auth-logo mb-2" onerror="this.src='https://upload.wikimedia.org/wikipedia/vi/c/c6/Logo_PTIT.png'; this.onerror=null;">
+                        <h4 class="mb-0">Đăng nhập</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="login-errors" class="alert alert-danger d-none">
+                            <ul class="mb-0" id="error-list"></ul>
+                        </div>
+                        
+                        <form method="post" action="../../controllers/public/login_process.php" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="user_type" class="form-label">Đăng nhập với tư cách</label>
+                                <select class="form-select" id="user_type" name="user_type" required>
+                                    <option value="student">Sinh viên</option>
+                                    <option value="admin">Quản trị viên</option>
+                                </select>
+                                <div class="invalid-feedback">Vui lòng chọn loại tài khoản.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Tên đăng nhập</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Nhập tên đăng nhập hoặc mã sinh viên" required>
+                                    <div class="invalid-feedback">Vui lòng nhập tên đăng nhập.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mật khẩu</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Nhập mật khẩu" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <div class="invalid-feedback">Vui lòng nhập mật khẩu.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-danger">Đăng nhập</button>
+                                <a href="index.html" class="btn btn-outline-secondary">Quay lại trang chủ</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
+    
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+        integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+        
+        // Form validation
+        (function() {
+            'use strict';
+            
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+        
+        // Check for error parameters in URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const errors = urlParams.get('errors');
+            const username = urlParams.get('username');
+            const userType = urlParams.get('user_type');
+            
+            if (errors) {
+                try {
+                    const errorList = JSON.parse(decodeURIComponent(errors));
+                    const errorContainer = document.getElementById('login-errors');
+                    const errorListElem = document.getElementById('error-list');
+                    
+                    if (errorList.length > 0) {
+                        errorContainer.classList.remove('d-none');
+                        errorListElem.innerHTML = '';
+                        
+                        errorList.forEach(error => {
+                            const li = document.createElement('li');
+                            li.textContent = error;
+                            errorListElem.appendChild(li);
+                        });
+                    }
+                } catch (e) {
+                    console.error('Error parsing error messages:', e);
+                }
+            }
+            
+            // Restore username and user type if available
+            if (username) {
+                document.getElementById('username').value = username;
+            }
+            
+            if (userType) {
+                document.getElementById('user_type').value = userType;
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin cá nhân - PTIT Student Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    
+    <!-- Include JS -->
+    <script src="../../assets/js/include.js"></script>
+    
+    <style>
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 0.8rem 1rem;
+            border-radius: 0.25rem;
+            margin-bottom: 0.2rem;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #f8f9fa;
+            color: #007bff;
+        }
+        .sidebar .nav-link.active {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section (loaded dynamically) -->
+    <div id="header"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Student Sidebar (loaded dynamically) -->
+            <div id="student-sidebar" class="col-lg-3 col-xl-2 px-0 bg-light sidebar"></div>
+            
+            <!-- Main content -->
+            <div class="col-md-9 col-lg-10 py-4">
+                <h2 class="mb-4">Thông tin cá nhân</h2>
+                
+                <!-- Student information -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Thông tin sinh viên</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="message-container"></div>
+                                <form id="profileForm">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Mã sinh viên</label>
+                                            <input type="text" class="form-control" id="student_id" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Họ và tên</label>
+                                            <input type="text" class="form-control" id="full_name" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Ngày sinh</label>
+                                            <input type="date" class="form-control" id="dob" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Giới tính</label>
+                                            <input type="text" class="form-control" id="gender" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Lớp</label>
+                                            <input type="text" class="form-control" id="class" readonly>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Số điện thoại</label>
+                                            <input type="tel" class="form-control" id="phone">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" class="btn btn-primary" id="updateContactBtn">
+                                            <i class="fas fa-save me-1"></i> Cập nhật thông tin liên hệ
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Đổi mật khẩu</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="password-message-container"></div>
+                                <form id="passwordForm">
+                                    <div class="mb-3">
+                                        <label class="form-label">Mật khẩu hiện tại</label>
+                                        <input type="password" class="form-control" id="current_password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Mật khẩu mới</label>
+                                        <input type="password" class="form-control" id="new_password" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Xác nhận mật khẩu mới</label>
+                                        <input type="password" class="form-control" id="confirm_password" required>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button type="button" class="btn btn-danger" id="changePasswordBtn">
+                                            <i class="fas fa-key me-1"></i> Đổi mật khẩu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0">Tổng kết học tập</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span>Điểm trung bình tích lũy:</span>
+                                    <span class="badge bg-info fs-5" id="gpa">0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span>Số tín chỉ đã học:</span>
+                                    <span class="badge bg-success fs-5" id="credits">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Số tín chỉ đạt:</span>
+                                    <span class="badge bg-primary fs-5" id="passed_credits">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section (loaded dynamically) -->
+    <div id="footer"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" 
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Custom Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set active link in the sidebar
+            document.querySelectorAll('#sidebar-profile').forEach(link => {
+                link.classList.add('active');
+            });
+            
+            // Fetch student profile data
+            fetch('../../controllers/student/get_student_profile.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error fetching profile data:', data.message);
+                        return;
+                    }
+                    
+                    // Fill profile form
+                    document.getElementById('student_id').value = data.student_id || '';
+                    document.getElementById('full_name').value = data.full_name || '';
+                    document.getElementById('dob').value = data.dob || '';
+                    document.getElementById('gender').value = data.gender || '';
+                    document.getElementById('class').value = data.class || '';
+                    document.getElementById('email').value = data.email || '';
+                    document.getElementById('phone').value = data.phone || '';
+                    
+                    // Fill academic info
+                    document.getElementById('gpa').textContent = parseFloat(data.academic.gpa).toFixed(2) || '0.00';
+                    document.getElementById('credits').textContent = data.academic.total_credits || '0';
+                    document.getElementById('passed_credits').textContent = data.academic.passed_credits || '0';
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('message-container').innerHTML = 
+                        '<div class="alert alert-danger">Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</div>';
+                });
+                
+            // Handle contact info update
+            document.getElementById('updateContactBtn').addEventListener('click', function() {
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                
+                // Validate input
+                if (!email || !validateEmail(email)) {
+                    showMessage('message-container', 'Vui lòng nhập email hợp lệ', 'danger');
+                    return;
+                }
+                
+                if (!phone || !validatePhone(phone)) {
+                    showMessage('message-container', 'Vui lòng nhập số điện thoại hợp lệ', 'danger');
+                    return;
+                }
+                
+                // Send update request
+                fetch('../../controllers/student/update_contact_info.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        phone: phone
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showMessage('message-container', data.message, 'danger');
+                    } else {
+                        showMessage('message-container', 'Thông tin liên hệ đã được cập nhật', 'success');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating contact info:', error);
+                    showMessage('message-container', 'Lỗi khi cập nhật thông tin liên hệ', 'danger');
+                });
+            });
+            
+            // Handle password change
+            document.getElementById('changePasswordBtn').addEventListener('click', function() {
+                const currentPassword = document.getElementById('current_password').value;
+                const newPassword = document.getElementById('new_password').value;
+                const confirmPassword = document.getElementById('confirm_password').value;
+                
+                // Validate input
+                if (!currentPassword) {
+                    showMessage('password-message-container', 'Vui lòng nhập mật khẩu hiện tại', 'danger');
+                    return;
+                }
+                
+                if (!newPassword || newPassword.length < 6) {
+                    showMessage('password-message-container', 'Mật khẩu mới phải có ít nhất 6 ký tự', 'danger');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showMessage('password-message-container', 'Xác nhận mật khẩu không khớp', 'danger');
+                    return;
+                }
+                
+                // Send password change request
+                fetch('../../controllers/student/change_password.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        confirm_password: confirmPassword
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        showMessage('password-message-container', data.message, 'danger');
+                    } else {
+                        showMessage('password-message-container', 'Mật khẩu đã được thay đổi thành công', 'success');
+                        document.getElementById('passwordForm').reset();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error changing password:', error);
+                    showMessage('password-message-container', 'Lỗi khi thay đổi mật khẩu', 'danger');
+                });
+            });
+        });
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function validatePhone(phone) {
+            const re = /^[0-9]{10,11}$/;
+            return re.test(phone);
+        }
+        
+        function showMessage(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            // Auto hide message after 5 seconds
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) {
+                    alert.classList.remove('show');
+                    setTimeout(() => container.innerHTML = '', 150);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

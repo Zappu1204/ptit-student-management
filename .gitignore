@@ -1,0 +1,34 @@
+# Environment variables
+.env
+
+# Composer
+/vendor/
+composer.lock
+
+# PHPUnit
+/phpunit.xml
+.phpunit.result.cache
+
+# User uploaded files
+/uploads/*
+!/uploads/.gitkeep
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+data
+node_modules
+*.log
+*.env.local
+*.env.development
+
+Run.md
